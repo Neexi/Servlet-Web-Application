@@ -62,8 +62,6 @@ public class DerbyDAOImpl implements CastDAO {
 	public boolean checkLogin(String username, String password) throws EmptyResultException{
 		boolean found = false;
 		try{
-			logger.info("The value passed is: "+username);
-			
 			String count_query = "SELECT COUNT(*) FROM TBL_USERS WHERE USER_NAME = ? AND USER_PASSWORD = ?";
 			PreparedStatement count_stmnt = connection.prepareStatement(count_query);
 			count_stmnt.setString(1, username);
@@ -71,7 +69,6 @@ public class DerbyDAOImpl implements CastDAO {
 			ResultSet count_res = count_stmnt.executeQuery();
 			count_res.next();
 			int numRows = count_res.getInt(1);
-			logger.info("The result set size is "+numRows);
 			if(numRows == 1) {
 				found = true;
 			}

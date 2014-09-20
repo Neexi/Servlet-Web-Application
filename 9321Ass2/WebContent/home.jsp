@@ -13,6 +13,8 @@ if (message != null) {%>
 <% } else {%>
 <div align="center"><h1>Welcome</h1></div>
 <% } %>
+<% String logged = (String) request.getSession().getAttribute("logged");
+if(logged == null || logged.equals("false")) {%> 
 <form action="control" method="get">
 	<div align="right">
 	<input type="hidden" name="action" value="login">
@@ -27,5 +29,13 @@ if (message != null) {%>
 	<input type="submit" VALUE="Create New Account">
 	</div>
 </form>
+<% } else { %>
+<div align="right"><h2>Hello, <%= (String) request.getSession().getAttribute("userSess")%>!</h2>
+<form action="control" method="get">
+<input type="hidden" name="action" value="logout">
+<input type="submit" VALUE="Log Out">
+</form>
+</div>
+<% } %>
 </body>
 </html>
