@@ -7,11 +7,11 @@
 <title>CF Movie Co</title>
 </head>
 <body>
-<% String message = (String) request.getAttribute("message"); 
-if (message != null) {%>
+<% String message = (String) request.getSession().getAttribute("message"); 
+if (message != null && !message.equals("")) {%>
 <div align="center"><h2><%= message %></h2></div>
 <% } else {%>
-<div align="center"><h1>Welcome</h1></div>
+<div align="center"><h1>Welcome to CF Movie</h1></div>
 <% } %>
 <% String logged = (String) request.getSession().getAttribute("logged");
 if(logged == null || logged.equals("false")) {%> 

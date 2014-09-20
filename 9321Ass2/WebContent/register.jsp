@@ -10,6 +10,10 @@
 <form action="control" method="get">
 	<div align="center">
 	<h1>Registration Form</h1>
+	<% String message = (String) request.getSession().getAttribute("message"); 
+	if (message != null && !message.equals("")) {%>
+	<h2><font color="red"><%= message %></font></h2>
+	<% } %>
 	<input type="hidden" name="action" value="create account">
 	Username	:<input type="text" name="username" size="20"><br>
 	Password	:<input type="password" name="password" size="20"><br>

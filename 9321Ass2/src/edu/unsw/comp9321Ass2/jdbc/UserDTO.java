@@ -11,6 +11,7 @@ public class UserDTO {
 	private String email;
 	private String firstName;
 	private String lastName;
+	private String status;
 	
 	public UserDTO(int userID, String username, String password, String email) {
 		this.userID = userID;
@@ -19,6 +20,7 @@ public class UserDTO {
 		this.email = email;
 		firstName = null;
 		lastName = null;
+		status = "inactive";
 	}
 	
 	public int getID() {
@@ -55,5 +57,13 @@ public class UserDTO {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+	
+	public String getStatus() {
+		return status;
+	}
+	
+	public void activateUser() {
+		status = "active";
 	}
 }

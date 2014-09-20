@@ -1,5 +1,5 @@
 package edu.unsw.comp9321Ass2.logic;
-
+//https://Roidi@bitbucket.org/steeeveen/comp9321-ass2.git <- putting this thing here just in case
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Logger;
@@ -13,10 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import edu.unsw.comp9321Ass2.exception.EmptyResultException;
-import edu.unsw.comp9321Ass2.exception.InvalidActionException;
 import edu.unsw.comp9321Ass2.common.ServiceLocatorException;
 import edu.unsw.comp9321Ass2.jdbc.CastDAO;
 import edu.unsw.comp9321Ass2.jdbc.DerbyDAOImpl;
+import edu.unsw.comp9321Ass2.jdbc.UserDTO;
 
 /**
  * Servlet implementation class ControlServlet
@@ -26,17 +26,20 @@ public class ControlServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	static Logger logger = Logger.getLogger(ControlServlet.class.getName());
 	private CastDAO cast;
+	private int lastUserID;
 	private boolean logged; //login status
        
     /**
      * @throws ServletException 
+     * @throws EmptyResultException 
      * @see HttpServlet#HttpServlet()
      */
-    public ControlServlet() throws ServletException {
+    public ControlServlet() throws ServletException, EmptyResultException {
         super();
         logged = false;
         try {
 			cast = new DerbyDAOImpl();
+			lastUserID = cast.countUser();
 		} catch (ServiceLocatorException e) {
 			logger.severe("Trouble connecting to database "+e.getStackTrace());
 			throw new ServletException();
@@ -74,11 +77,9 @@ public class ControlServlet extends HttpServlet {
 	 */
 	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, EmptyResultException {
 		String forwardPage = "";
-		String username = "";
-		String password = "";
 		HttpSession session = request.getSession();
+		session.setAttribute("message", ""); //Resetting message session attribute every load
 		String action = request.getParameter("action");
-		logger.info("Login is "+logged);
 		if(logged == false) {
 			if(cast.checkLogin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))) {
 				logged = true;
@@ -87,32 +88,72 @@ public class ControlServlet extends HttpServlet {
 		if(action==null){
 			forwardPage = "home.jsp";
 		} else if(action.equals("login")) { 
-			username = request.getParameter("username");
-			password = request.getParameter("password");
+			String username = request.getParameter("username");
+			String password = request.getParameter("password");
 			if(cast.checkLogin(username, password)) {
 				session.setAttribute("userSess",username);
 				session.setAttribute("passSess",password);
-				//TODO : Session timeout
+				//TODO: Proper Session timeout (need discussing)
+				logger.info(username+" is now logged in");
 				forwardPage = "redirect1.html";
 			} else {
-				request.setAttribute("message", "Wrong Username or Password, please retry");
+				session.setAttribute("message", "Incorrect Username or Password, please retry");
 				forwardPage = "home.jsp";
 			}
 		} else if(action.equals("logout")) {
+			logger.info(session.getAttribute("userSess")+" is now logged out");
 			session.setAttribute("userSess","");
 			session.setAttribute("passSess","");
 			logged=false;
-			request.setAttribute("message", "You are now logged out");
+			session.setAttribute("message", "You are now logged out");
 			forwardPage = "home.jsp";
-		} else if(action.equals("register")) {
+		} else if(action.equals("register")) { //Moving to the registration page
 			forwardPage = "register.jsp";
-		} else if(action.equals("create account")) {
-			forwardPage = "redirect.html";
+		} else if(action.equals("create account")) { //Done putting information to create new account
+			String username = request.getParameter("username");
+			String password = request.getParameter("password");
+			String email = request.getParameter("email");
+			String notLegit = legitimateNewAccount(username, password, email);
+			if(notLegit.equals("")) {
+				UserDTO newUser = new UserDTO(lastUserID+1, username, password, email);
+				lastUserID++;
+				cast.addUser(newUser);
+				//TODO: Sending email to activate the account
+				forwardPage = "redirect.html";
+			} else {
+				session.setAttribute("message", notLegit);
+				forwardPage = "register.jsp";
+			}
+		} else if(action.equals("return")) {
+			forwardPage = "home.jsp";
 		}
 		
 		session.setAttribute("logged",String.valueOf(logged));
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/"+forwardPage);
 		dispatcher.forward(request, response);
+	}
+	
+	/**
+	 * Returning the problem with the account creation
+	 * @param username
+	 * @param password
+	 * @param email
+	 * @return
+	 * @throws EmptyResultException
+	 */
+	private String legitimateNewAccount(String username, String password, String email) throws EmptyResultException {
+		String notLegit = "";
+		//TODO : More proper parameter check
+		if(cast.existUser(username)) {
+			notLegit = "Username already exists";
+		} else if(username.length() < 5) {
+			notLegit = "Username is too short";
+		} else if(username.length() > 20) {
+			notLegit = "Username is too long";
+		} else if(cast.usedEmail(email)) {
+			notLegit = "Email is already used";
+		}
+		return notLegit;
 	}
 
 }
