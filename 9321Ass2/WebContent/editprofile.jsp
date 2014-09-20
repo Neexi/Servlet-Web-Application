@@ -23,5 +23,11 @@
 	<input type="submit" VALUE="Edit">
 	</div>
 </form>
+<form action="control" method="get">
+	<div align="center">
+	<input type="hidden" name="action" value="return">
+	<input type="submit" VALUE="Return to Home Page">
+	</div>
+</form>
 </body>
 </html>
