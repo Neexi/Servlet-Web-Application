@@ -78,7 +78,7 @@ public class ControlServlet extends HttpServlet {
 	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, EmptyResultException {
 		String forwardPage = "";
 		HttpSession session = request.getSession();
-		session.setAttribute("message", ""); //Resetting message session attribute every load
+		session.setAttribute("message", ""); //Resetting message session attribute after it has been sent
 		String action = request.getParameter("action");
 		if(logged == false) {
 			if(cast.checkLogin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))) {
@@ -107,6 +107,23 @@ public class ControlServlet extends HttpServlet {
 			logged=false;
 			session.setAttribute("message", "You are now logged out");
 			forwardPage = "home.jsp";
+		} else if(action.equals("edit profile")) {
+			forwardPage = "editprofile.jsp";
+		} else if(action.equals("commit edit")) {
+			String password = request.getParameter("password");
+			String passwordC = request.getParameter("passwordC");
+			String email = request.getParameter("email");
+			String firstName = request.getParameter("firstName");
+			String lastName = request.getParameter("lastName");
+			String notLegit = legitimateEditProfile(password, passwordC, email);
+			if(notLegit.equals("")) {
+				//TODO:Editing the database
+				session.setAttribute("message", "Your profile has been changed");
+				forwardPage = "redirect1.html";
+			} else {
+				session.setAttribute("message", notLegit);
+				forwardPage = "editprofile.jsp";
+			}
 		} else if(action.equals("register")) { //Moving to the registration page
 			forwardPage = "register.jsp";
 		} else if(action.equals("create account")) { //Done putting information to create new account
@@ -127,7 +144,6 @@ public class ControlServlet extends HttpServlet {
 		} else if(action.equals("return")) {
 			forwardPage = "home.jsp";
 		}
-		
 		session.setAttribute("logged",String.valueOf(logged));
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/"+forwardPage);
 		dispatcher.forward(request, response);
@@ -151,6 +167,17 @@ public class ControlServlet extends HttpServlet {
 		} else if(username.length() > 20) {
 			notLegit = "Username is too long";
 		} else if(cast.usedEmail(email)) {
+			notLegit = "Email is already used";
+		}
+		return notLegit;
+	}
+	
+	private String legitimateEditProfile(String password, String confirmPassword, String email) throws EmptyResultException {
+		String notLegit = "";
+		//TODO : More proper parameter check
+		if(!password.equals("") && !password.equals(confirmPassword)) {
+			notLegit = "Confirmation password does not match the new password";
+		} else if(!email.equals("") && cast.usedEmail(email)) {
 			notLegit = "Email is already used";
 		}
 		return notLegit;
