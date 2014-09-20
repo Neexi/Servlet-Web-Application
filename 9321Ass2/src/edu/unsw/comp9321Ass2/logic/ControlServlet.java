@@ -80,7 +80,7 @@ public class ControlServlet extends HttpServlet {
 			if(cast.checkLogin(username, password)) {
 				//TODO : Set Cookie
 				forwardPage = "redirect1.html";
-				//Dummy
+				//Dummy else
 			} else {
 				request.setAttribute("message", "Wrong Username or Password, please retry");
 				forwardPage = "home.jsp";
