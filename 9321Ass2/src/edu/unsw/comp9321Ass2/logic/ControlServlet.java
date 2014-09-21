@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,8 @@ import edu.unsw.comp9321Ass2.jdbc.UserDTO;
  * Servlet implementation class ControlServlet
  */
 @WebServlet({"/Home","/control"})
+@MultipartConfig(maxFileSize = 16177215) // upload file's size up to 16MB
+
 public class ControlServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	static Logger logger = Logger.getLogger(ControlServlet.class.getName());
@@ -150,10 +153,10 @@ public class ControlServlet extends HttpServlet {
 			forwardPage = "addMovie.jsp";
 		
 		}else if(action.equals("addMovie")){
-			logger.info("ADDING A MOVIE");
+			//logger.info("ADDING A MOVIE");
 			InputStream inputStream = null;
 			Part filePart = request.getPart("poster");
-			 if (filePart != null) {
+			if (filePart != null) {
 		            // prints out some information for debugging
 		            System.out.println(filePart.getName());
 		            System.out.println(filePart.getSize());
@@ -171,7 +174,7 @@ public class ControlServlet extends HttpServlet {
 		     }else{
 		    	 System.out.println("Filepart not found");
 		     }
-			 forwardPage = "register.jsp";
+			 forwardPage = "home.jsp";
 		}else if(action.equals("return")) {
 			forwardPage = "home.jsp";
 		}

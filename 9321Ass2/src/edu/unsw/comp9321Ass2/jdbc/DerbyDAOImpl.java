@@ -190,9 +190,10 @@ public class DerbyDAOImpl implements CastDAO {
 	public void addMovie(MovieDTO movie) {
 		//Right now only testing adding a image file called poster
 		try {
-			String sql = "INSERT INTO TABLE_MOVIES (POSTER, last_name, photo) values (?)";
+			String sql = "INSERT INTO TBL_MOVIES (MOVIE_ID,POSTER) values (?,?)";
 			PreparedStatement statement = connection.prepareStatement(sql);
-			statement.setBlob(1, movie.getPoster());
+			statement.setInt(1,1);
+			statement.setBlob(2, movie.getPoster());
 			int result = statement.executeUpdate();
 			logger.info("Statement successfully executed "+result);
 			statement.close();
