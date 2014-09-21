@@ -17,5 +17,6 @@ public interface CastDAO {
 	public boolean existUser(String username) throws EmptyResultException;
 	
 	public boolean usedEmail(String email) throws EmptyResultException;
-
+	
+	public void addMovie(MovieDTO movie);
 }
