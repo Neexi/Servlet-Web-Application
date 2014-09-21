@@ -9,8 +9,7 @@
 <body>
 <center>
         <h1>Add a new movie!</h1>
-        <form method="post" action="control" enctype="multipart/form-data">
-        	<input type="hidden" name="action" value="addMovie">
+        <form method="post" action="control?action=addMovie" enctype="multipart/form-data">
             <table border="0">
                 <tr>
                     <td>Movie Title: </td>

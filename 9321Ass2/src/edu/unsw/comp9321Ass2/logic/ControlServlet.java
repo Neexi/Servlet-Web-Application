@@ -84,6 +84,7 @@ public class ControlServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		session.setAttribute("message", ""); //Resetting message session attribute after it has been sent
 		String action = request.getParameter("action");
+		logger.info("Action" + action);
 		if(logged == false) {
 			if(cast.checkLogin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))) {
 				logged = true;
@@ -161,11 +162,15 @@ public class ControlServlet extends HttpServlet {
 		            // obtains input stream of the upload file
 		            inputStream = filePart.getInputStream();
 		            Date adate = new Date();
+		            //Dummy variables for now, just want to test inserting one image.
 		            MovieDTO newMovie = new MovieDTO(1, "test", adate, inputStream, "test",
 		            		"test","test","test",15);
 		            cast.addMovie(newMovie);
+					 System.out.println("Added movie");
+
+		     }else{
+		    	 System.out.println("Filepart not found");
 		     }
-			 System.out.println("Added movie");
 			 forwardPage = "register.jsp";
 		}else if(action.equals("return")) {
 			forwardPage = "home.jsp";
