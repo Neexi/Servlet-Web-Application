@@ -29,6 +29,10 @@ if(logged == null || logged.equals("false")) {%>
 	<input type="submit" VALUE="Create New Account">
 	</div>
 </form>
+<form action="control" method="get">
+<input type="hidden" name="action" value="newMovie">
+<input type="submit" VALUE="New movie">
+</form>
 <% } else { %>
 <div align="right"><h2>Hello, <%= (String) request.getSession().getAttribute("userSess")%>!</h2>
 <form action="control" method="get">

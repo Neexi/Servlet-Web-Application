@@ -9,7 +9,8 @@
 <body>
 <center>
         <h1>Add a new movie!</h1>
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" action="control" enctype="multipart/form-data">
+        	<input type="hidden" name="action" value="addMovie">
             <table border="0">
                 <tr>
                     <td>Movie Title: </td>
@@ -45,7 +46,7 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <input type="submit" value="Save">
+                        <input type="submit" value="Add to database!">
                     </td>
                 </tr>
             </table>

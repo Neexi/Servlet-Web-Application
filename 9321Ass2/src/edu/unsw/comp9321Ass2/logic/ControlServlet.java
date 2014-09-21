@@ -1,7 +1,9 @@
 package edu.unsw.comp9321Ass2.logic;
 //https://Roidi@bitbucket.org/steeeveen/comp9321-ass2.git <- putting this thing here just in case
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
@@ -11,11 +13,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 import edu.unsw.comp9321Ass2.exception.EmptyResultException;
 import edu.unsw.comp9321Ass2.common.ServiceLocatorException;
 import edu.unsw.comp9321Ass2.jdbc.CastDAO;
 import edu.unsw.comp9321Ass2.jdbc.DerbyDAOImpl;
+import edu.unsw.comp9321Ass2.jdbc.MovieDTO;
 import edu.unsw.comp9321Ass2.jdbc.UserDTO;
 
 /**
@@ -141,7 +145,29 @@ public class ControlServlet extends HttpServlet {
 				session.setAttribute("message", notLegit);
 				forwardPage = "register.jsp";
 			}
-		} else if(action.equals("return")) {
+		}else if(action.equals("newMovie")){
+			forwardPage = "addMovie.jsp";
+		
+		}else if(action.equals("addMovie")){
+			logger.info("ADDING A MOVIE");
+			InputStream inputStream = null;
+			Part filePart = request.getPart("poster");
+			 if (filePart != null) {
+		            // prints out some information for debugging
+		            System.out.println(filePart.getName());
+		            System.out.println(filePart.getSize());
+		            System.out.println(filePart.getContentType());
+		             
+		            // obtains input stream of the upload file
+		            inputStream = filePart.getInputStream();
+		            Date adate = new Date();
+		            MovieDTO newMovie = new MovieDTO(1, "test", adate, inputStream, "test",
+		            		"test","test","test",15);
+		            cast.addMovie(newMovie);
+		     }
+			 System.out.println("Added movie");
+			 forwardPage = "register.jsp";
+		}else if(action.equals("return")) {
 			forwardPage = "home.jsp";
 		}
 		session.setAttribute("logged",String.valueOf(logged));
