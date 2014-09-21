@@ -25,6 +25,10 @@ public class DerbyDAOImpl implements CastDAO {
 		logger.info("Got connection");
 	}
 	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// User related function
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	@Override
 	
 	//TODO:No proper usage other than to check if database is working for now <- Don't forget to delete this line before submitting
@@ -56,6 +60,25 @@ public class DerbyDAOImpl implements CastDAO {
 			e.printStackTrace();
 		}
 		return users;
+	}
+	
+	public UserDTO findUser(String username) throws EmptyResultException{
+		UserDTO user = null;	
+		try{
+			
+			String query_cast = "SELECT * FROM TBL_USERS WHERE USER_NAME = ?";
+			PreparedStatement stmnt = connection.prepareStatement(query_cast);
+			stmnt.setString(1, username);
+			ResultSet res = stmnt.executeQuery();
+			res.next();
+			user = new UserDTO(res.getInt("USER_ID"), res.getString("USER_NAME"), res.getString("USER_PASSWORD"), res.getString("USER_EMAIL"), 
+					res.getString("USER_FIRSTNAME"),res.getString("USER_LASTNAME"), res.getString("USER_STATUS"));
+		}catch(Exception e){
+			System.out.println("Caught Exception");
+			e.printStackTrace();
+			throw new EmptyResultException();
+		}
+		return user;
 	}
 	
 	/**
@@ -129,10 +152,28 @@ public class DerbyDAOImpl implements CastDAO {
 			logger.info(user.getUsername()+" has been registered to the database");
 			stmnt.close();
 		}catch(Exception e){
-			logger.severe("Unable to store comment! ");
+			logger.severe("Unable to add user! ");
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public void activateUser(int userID) {
+		PreparedStatement stmnt = null; 
+		try{
+			String sqlStr = 
+				"UPDATE TBL_USERS SET USER_STATUS = 'active' "+
+				"WHERE USER_ID = ?";
+			stmnt = connection.prepareStatement(sqlStr);
+			stmnt.setInt(1, userID);
+			int result = stmnt.executeUpdate();
+			logger.info("Statement successfully executed "+result);
+			logger.info("Account activated");
+			stmnt.close();
+		}catch(Exception e){
+			logger.severe("Unable change user profile! ");
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -187,6 +228,34 @@ public class DerbyDAOImpl implements CastDAO {
 		return used;
 	}
 	
+	public void editUser(String username, String email, String firstName, String lastName) {
+		PreparedStatement stmnt = null; 
+		try{
+			String sqlStr = 
+				"UPDATE TBL_USERS SET USER_EMAIL = ?, USER_FIRSTNAME = ?, USER_LASTNAME = ? "+
+				"WHERE USER_NAME = ?";
+			stmnt = connection.prepareStatement(sqlStr);
+			stmnt.setString(1, email);
+			stmnt.setString(2, firstName);
+			stmnt.setString(3, lastName);
+			stmnt.setString(4, username);
+			int result = stmnt.executeUpdate();
+			logger.info("Statement successfully executed "+result);
+			logger.info(username+" profile has been changed");
+			stmnt.close();
+		}catch(Exception e){
+			logger.severe("Unable change user profile! ");
+			e.printStackTrace();
+		}
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Movie related function
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Adding a movie to the movie table in the database
+	 */
 	public void addMovie(MovieDTO movie) {
 		//Right now only testing adding a image file called poster
 		try {

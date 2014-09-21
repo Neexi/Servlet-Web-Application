@@ -18,9 +18,19 @@ public class UserDTO {
 		this.username = username;
 		this.password = password;
 		this.email = email;
-		firstName = null;
-		lastName = null;
+		firstName = "";
+		lastName = "";
 		status = "inactive";
+	}
+	
+	public UserDTO(int userID, String username, String password, String email, String firstName, String lastName, String status) {
+		this.userID = userID;
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.status = status;
 	}
 	
 	public int getID() {

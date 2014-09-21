@@ -15,11 +15,10 @@
 	<h2><font color="red"><%= message %></font></h2>
 	<% } %>
 	<input type="hidden" name="action" value="commit edit">
-	New Password	:<input type="password" name="password" size="20"><br>
-	Confirm Password	:<input type="password" name="passwordC" size="20"><br>
-	New Email		:<input type="text" name="email" size="20"><br>
-	New First Name		:<input type="text" name="firstname" size="20"><br>
-	New Last Name		:<input type="text" name="lastname" size="20"><br>
+	Username		:<input type="text" name="username" value="<%= request.getAttribute("username") %>" size="20" disabled><br>
+	Email		:<input type="text" name="email" value="<%= request.getAttribute("email") %>" size="20"><br>
+	First Name		:<input type="text" name="firstName" value="<%= request.getAttribute("firstName") %>" size="20"><br>
+	Last Name		:<input type="text" name="lastName" value="<%= request.getAttribute("lastName") %>" size="20"><br>
 	<input type="submit" VALUE="Edit">
 	</div>
 </form>

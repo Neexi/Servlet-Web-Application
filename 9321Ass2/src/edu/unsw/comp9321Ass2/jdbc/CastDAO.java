@@ -8,15 +8,21 @@ public interface CastDAO {
 	
 	public List<UserDTO> findAllUser();
 	
+	public UserDTO findUser(String username) throws EmptyResultException;
+	
 	public int countUser() throws EmptyResultException;
 	
 	public boolean checkLogin(String username, String password) throws EmptyResultException;
 	
 	public void addUser(UserDTO user);
 	
+	public void activateUser(int userID);
+	
 	public boolean existUser(String username) throws EmptyResultException;
 	
 	public boolean usedEmail(String email) throws EmptyResultException;
+	
+	public void editUser(String username, String email, String firstName, String lastName);
 	
 	public void addMovie(MovieDTO movie);
 }
