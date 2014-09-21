@@ -40,6 +40,10 @@ if(logged == null || logged.equals("false")) {%>
 <input type="submit" VALUE="Edit Profile">
 </form>
 <form action="control" method="get">
+<input type="hidden" name="action" value="admin">
+<input type="submit" VALUE="Admin Page">
+</form>
+<form action="control" method="get">
 <input type="hidden" name="action" value="logout">
 <input type="submit" VALUE="Log Out">
 </form>

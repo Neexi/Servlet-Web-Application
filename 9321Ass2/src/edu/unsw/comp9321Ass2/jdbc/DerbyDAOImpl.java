@@ -18,11 +18,15 @@ public class DerbyDAOImpl implements CastDAO {
 
 	static Logger logger = Logger.getLogger(DerbyDAOImpl.class.getName());
 	private Connection connection;
+	private int lastCinemaID;
+	private int lastAmenityID;
 	DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
 	
-	public DerbyDAOImpl() throws ServiceLocatorException, SQLException{
+	public DerbyDAOImpl() throws ServiceLocatorException, SQLException, EmptyResultException{
 		connection = DBConnectionFactory.getConnection();
 		logger.info("Got connection");
+		lastCinemaID = countCinema();
+		lastAmenityID = countAmenity();
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,11 +112,34 @@ public class DerbyDAOImpl implements CastDAO {
 	public boolean checkLogin(String username, String password) throws EmptyResultException{
 		boolean found = false;
 		try{
+			String count_query = "SELECT COUNT(*) FROM TBL_USERS WHERE USER_NAME = ? AND USER_PASSWORD = ? AND (USER_STATUS = ? OR USER_STATUS = ?)";
+			PreparedStatement count_stmnt = connection.prepareStatement(count_query);
+			count_stmnt.setString(1, username);
+			count_stmnt.setString(2, password);
+			count_stmnt.setString(3, "active"); //User account has to be activated
+			count_stmnt.setString(4, "admin"); //User has to be admin
+			ResultSet count_res = count_stmnt.executeQuery();
+			count_res.next();
+			int numRows = count_res.getInt(1);
+			if(numRows == 1) {
+				found = true;
+			}
+		}catch(Exception e){
+			System.out.println("Caught Exception");
+			e.printStackTrace();
+			throw new EmptyResultException();
+		}
+		return found;
+	}
+	
+	public boolean checkAdmin(String username, String password) throws EmptyResultException{
+		boolean found = false;
+		try{
 			String count_query = "SELECT COUNT(*) FROM TBL_USERS WHERE USER_NAME = ? AND USER_PASSWORD = ? AND USER_STATUS = ?";
 			PreparedStatement count_stmnt = connection.prepareStatement(count_query);
 			count_stmnt.setString(1, username);
 			count_stmnt.setString(2, password);
-			count_stmnt.setString(3, "active");
+			count_stmnt.setString(3, "admin"); //User has to be admin
 			ResultSet count_res = count_stmnt.executeQuery();
 			count_res.next();
 			int numRows = count_res.getInt(1);
@@ -247,6 +274,94 @@ public class DerbyDAOImpl implements CastDAO {
 			logger.severe("Unable change user profile! ");
 			e.printStackTrace();
 		}
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Admin related function
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public void addCinema(String location, int capacity, List<String> amenities) {
+		PreparedStatement stmnt = null; 
+		
+		try{
+			String sqlStr = 
+				"INSERT INTO TBL_CINEMAS (CINEMA_ID, CINEMA_LOCATION, CINEMA_CAPACITY) "+
+				"VALUES (?,?,?)";
+			stmnt = connection.prepareStatement(sqlStr);
+			stmnt.setInt(1,lastCinemaID+1);
+			stmnt.setString(2, location);
+			stmnt.setInt(3, capacity);
+			int result = stmnt.executeUpdate();
+			logger.info("Statement successfully executed "+result);
+			logger.info("Cinema has been registered to the database");
+			lastCinemaID++;
+			stmnt.close();
+		}catch(Exception e){
+			logger.severe("Unable to add cinema! ");
+			e.printStackTrace();
+		}
+		
+		for(String amenity : amenities) {
+			try{
+				String sqlStr = 
+					"INSERT INTO TBL_CINEMA_AMENITIES (AMENITY_ID, AMENITY_NAME, AMENITY_CINEMA) "+
+					"VALUES (?,?,?)";
+				stmnt = connection.prepareStatement(sqlStr);
+				stmnt.setInt(1,lastAmenityID+1);
+				stmnt.setString(2, amenity);
+				stmnt.setInt(3, lastCinemaID);
+				int result = stmnt.executeUpdate();
+				logger.info("Statement successfully executed "+result);
+				logger.info("Amenity has been registered to the database");
+				lastAmenityID++;
+				stmnt.close();
+			}catch(Exception e){
+				logger.severe("Unable to add amenity! ");
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Count the number of cinema
+	 * @return
+	 * @throws EmptyResultException
+	 */
+	public int countCinema() throws EmptyResultException {
+		int count = 0;
+		try{
+			String count_query = "SELECT COUNT(*) FROM TBL_CINEMAS";
+			PreparedStatement count_stmnt = connection.prepareStatement(count_query);
+			ResultSet count_res = count_stmnt.executeQuery();
+			count_res.next();
+			count = count_res.getInt(1);
+		}catch(Exception e){
+			System.out.println("Caught Exception");
+			e.printStackTrace();
+			throw new EmptyResultException();
+		}
+		return count;
+	}
+	
+	/**
+	 * Count the number of amenity
+	 * @return
+	 * @throws EmptyResultException
+	 */
+	public int countAmenity() throws EmptyResultException {
+		int count = 0;
+		try{
+			String count_query = "SELECT COUNT(*) FROM TBL_CINEMA_AMENITIES";
+			PreparedStatement count_stmnt = connection.prepareStatement(count_query);
+			ResultSet count_res = count_stmnt.executeQuery();
+			count_res.next();
+			count = count_res.getInt(1);
+		}catch(Exception e){
+			System.out.println("Caught Exception");
+			e.printStackTrace();
+			throw new EmptyResultException();
+		}
+		return count;
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

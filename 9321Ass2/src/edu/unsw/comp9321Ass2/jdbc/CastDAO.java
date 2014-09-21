@@ -14,6 +14,8 @@ public interface CastDAO {
 	
 	public boolean checkLogin(String username, String password) throws EmptyResultException;
 	
+	public boolean checkAdmin(String username, String password) throws EmptyResultException;
+	
 	public void addUser(UserDTO user);
 	
 	public void activateUser(int userID);
@@ -23,6 +25,12 @@ public interface CastDAO {
 	public boolean usedEmail(String email) throws EmptyResultException;
 	
 	public void editUser(String username, String email, String firstName, String lastName);
+	
+	public void addCinema(String location, int capacity, List<String> amenities);
+	
+	public int countCinema() throws EmptyResultException;
+	
+	public int countAmenity() throws EmptyResultException;
 	
 	public void addMovie(MovieDTO movie);
 }

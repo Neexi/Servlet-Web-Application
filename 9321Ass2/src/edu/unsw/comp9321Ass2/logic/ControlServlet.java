@@ -3,7 +3,9 @@ package edu.unsw.comp9321Ass2.logic;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -116,36 +118,48 @@ public class ControlServlet extends HttpServlet {
 				forwardPage = "home.jsp";
 			}
 		} else if(action.equals("logout")) {
-			logger.info(session.getAttribute("userSess")+" is now logged out");
-			session.setAttribute("userSess","");
-			session.setAttribute("passSess","");
-			logged=false;
-			session.setAttribute("message", "You are now logged out");
+			if(cast.checkLogin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))) {
+				logger.info(session.getAttribute("userSess")+" is now logged out");
+				session.setAttribute("userSess","");
+				session.setAttribute("passSess","");
+				logged=false;
+				session.setAttribute("message", "You are now logged out");
+			} else {
+				forwardPage = "reject1.jsp";
+			}
 			forwardPage = "home.jsp";
 		} else if(action.equals("edit profile")) {
-			UserDTO user = cast.findUser((String)session.getAttribute("userSess"));
-			request.setAttribute("username", user.getUsername());
-			request.setAttribute("email", user.getEmail());
-			request.setAttribute("firstName", user.getFirstName());
-			request.setAttribute("lastName", user.getLastName());
-			forwardPage = "editprofile.jsp";
-		} else if(action.equals("commit edit")) {
-			String username = (String)session.getAttribute("userSess");
-			String email = request.getParameter("email");
-			String firstName = request.getParameter("firstName");
-			String lastName = request.getParameter("lastName");
-			String notLegit = legitimateEditProfile(email);
-			request.setAttribute("username", username);
-			request.setAttribute("email", email);
-			request.setAttribute("firstName", firstName);
-			request.setAttribute("lastName", lastName);
-			if(notLegit.equals("")) {
-				cast.editUser(username, email, firstName, lastName);
-				session.setAttribute("message", "Your profile has been changed");
+			if(cast.checkLogin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))) {
+				UserDTO user = cast.findUser((String)session.getAttribute("userSess"));
+				request.setAttribute("username", user.getUsername());
+				request.setAttribute("email", user.getEmail());
+				request.setAttribute("firstName", user.getFirstName());
+				request.setAttribute("lastName", user.getLastName());
 				forwardPage = "editprofile.jsp";
 			} else {
-				session.setAttribute("message", notLegit);
-				forwardPage = "editprofile.jsp";
+				forwardPage = "reject1.jsp";
+			}
+		} else if(action.equals("commit edit")) {
+			if(cast.checkLogin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))) {
+				String username = (String)session.getAttribute("userSess");
+				String email = request.getParameter("email");
+				String firstName = request.getParameter("firstName");
+				String lastName = request.getParameter("lastName");
+				String notLegit = legitimateEditProfile(email);
+				request.setAttribute("username", username);
+				request.setAttribute("email", email);
+				request.setAttribute("firstName", firstName);
+				request.setAttribute("lastName", lastName);
+				if(notLegit.equals("")) {
+					cast.editUser(username, email, firstName, lastName);
+					session.setAttribute("message", "Your profile has been changed");
+					forwardPage = "editprofile.jsp";
+				} else {
+					session.setAttribute("message", notLegit);
+					forwardPage = "editprofile.jsp";
+				}
+			} else {
+				forwardPage = "reject1.jsp";
 			}
 		} else if(action.equals("register")) { //Moving to the registration page
 			forwardPage = "register.jsp";
@@ -168,10 +182,20 @@ public class ControlServlet extends HttpServlet {
 		} else if(action.equals("activate")) { 
 			int userID = Integer.parseInt(request.getParameter("id"));
 			cast.activateUser(userID);
-			forwardPage = "activated.jsp";
+			if(cast.checkLogin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))) {
+				UserDTO user = cast.findUser((String)session.getAttribute("userSess"));
+				request.setAttribute("username", user.getUsername());
+				request.setAttribute("email", user.getEmail());
+				request.setAttribute("firstName", user.getFirstName());
+				request.setAttribute("lastName", user.getLastName());
+				session.setAttribute("message", "Your account has been activated, you now can update your profile");
+				forwardPage = "editprofile.jsp";
+			} else {
+				session.setAttribute("message", "You have been logged out from your previous session, please relog");
+				forwardPage = "home.jsp";
+			}
 		} else if(action.equals("newMovie")){
 			forwardPage = "addMovie.jsp";
-		
 		} else if(action.equals("addMovie")){
 			//logger.info("ADDING A MOVIE");
 			InputStream inputStream = null;
@@ -195,8 +219,34 @@ public class ControlServlet extends HttpServlet {
 		    	 System.out.println("Filepart not found");
 		     }
 			 forwardPage = "home.jsp";
-		}else if(action.equals("return")) {
+		} else if(action.equals("return")) {
 			forwardPage = "home.jsp";
+		} 
+		//Admin part after this step
+		else if(action.equals("admin")) { 
+			if(cast.checkAdmin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))) {
+				forwardPage = "admin.jsp";
+			} else {
+				forwardPage = "reject2.jsp";
+			}
+		} else if(action.equals("add cinema")) {
+			if(cast.checkAdmin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))) {
+				forwardPage = "addCinema.jsp";
+			} else {
+				forwardPage = "reject2.jsp";
+			}
+		} else if(action.equals("cinema added")) {
+			if(cast.checkAdmin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))) {
+				//TODO: proper checking for adding cinema(like capacity has to be number, etc)
+				String location = request.getParameter("location");
+				int capacity = Integer.parseInt(request.getParameter("capacity"));
+				List<String> amenities = Arrays.asList(request.getParameterValues("amenity"));
+				cast.addCinema(location, capacity, amenities);
+				session.setAttribute("message", "Cinema added");
+				forwardPage = "admin.jsp";
+			} else {
+				forwardPage = "reject2.jsp";
+			}
 		}
 		session.setAttribute("logged",String.valueOf(logged));
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/"+forwardPage);

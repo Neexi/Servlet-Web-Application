@@ -17,7 +17,7 @@ public class MovieDTO {
 	private String genre;
 	private String director;
 	private String synopsis;
-	private String actors; //Is it better to represent as separate dto?
+	private String actors; //Is it better to represent as separate dto? //Answer: Nah, unless we really need additional information for the main actor
 	private int ageRating;
 	
 	/*
