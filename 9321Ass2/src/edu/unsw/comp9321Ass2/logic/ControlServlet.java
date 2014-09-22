@@ -61,6 +61,7 @@ public class ControlServlet extends HttpServlet {
     	commands.put("addMovie",new loginCommand());
     	//It seems like ur admin implementation will screw up the command pattern?
     	*/
+    	//ezz
     }
        
     /**
