@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -44,6 +45,24 @@ public class ControlServlet extends HttpServlet {
 	private CastDAO cast;
 	private int lastUserID;
 	private boolean logged; //login status
+	
+	public void init() throws ServletException{
+		super.init();
+    	HashMap commands = new HashMap();
+    	/*
+    	commands.put("login",new loginCommand());
+    	commands.put("logout",new loginCommand());
+    	commands.put("edit profile",new loginCommand());
+    	commands.put("commit edit",new loginCommand());
+    	commands.put("register",new loginCommand());
+    	commands.put("activate",new loginCommand());
+    	commands.put("newMovie",new loginCommand());
+    	commands.put("addMovie",new loginCommand());
+    	commands.put("addMovie",new loginCommand());
+    	commands.put("addMovie",new loginCommand());
+    	//It seems like ur admin implementation will screw up the command pattern?
+    	*/
+    }
        
     /**
      * @throws ServletException 
