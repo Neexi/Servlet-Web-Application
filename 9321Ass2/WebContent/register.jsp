@@ -15,9 +15,11 @@
 	<h2><font color="red"><%= message %></font></h2>
 	<% } %>
 	<input type="hidden" name="action" value="create account">
-	Username	:<input type="text" name="username" size="20"><br>
-	Password	:<input type="password" name="password" size="20"><br>
-	Email		:<input type="text" name="email" size="20"><br>
+	<table border="0">
+	<tr><td>Username	:</td><td><input type="text" name="username" size="40"></td></tr>
+	<tr><td>Password	:</td><td><input type="password" name="password" size="40"></td></tr>
+	<tr><td>Email		:</td><td><input type="text" name="email" size="40"></td></tr>
+	</table>
 	<input type="submit" VALUE="submit">
 	</div>
 </form>

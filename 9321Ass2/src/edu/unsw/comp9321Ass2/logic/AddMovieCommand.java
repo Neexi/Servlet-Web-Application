@@ -2,7 +2,9 @@ package edu.unsw.comp9321Ass2.logic;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +36,8 @@ public class AddMovieCommand implements Command {
 		int releaseYear = Integer.parseInt(request.getParameter("release_year")) - 1901; //offset for some reason..
 		@SuppressWarnings("deprecation")
 		java.sql.Date date = new java.sql.Date(releaseYear,releaseMmonth,releaseDate);
-
+		
+		//TODO : I change the else to allow me putting movie without poster for now, change it back later if i forget
 		Part filePart = request.getPart("poster");
 		if (filePart != null) {
 	        // prints out some information for debugging
@@ -49,7 +52,10 @@ public class AddMovieCommand implements Command {
 	        cast.addMovie(newMovie);
 	        System.out.println("Added movie");
 		 } else{
-			 System.out.println("Filepart not found");
+			 MovieDTO newMovie = new MovieDTO(cast.lastMovie()+1, title, date, null, genres,
+		        		director,synopsis,actors,age_rating);
+		     cast.addMovie(newMovie);
+			 //System.out.println("Filepart not found");
 		 }
 		 forwardPage = "home.jsp";
 		 return forwardPage;

@@ -34,12 +34,13 @@ public class CreateAccountCommand implements Command {
 		String email = request.getParameter("email");
 		String notLegit = legitimateNewAccount(username, password, email);
 		if(notLegit.equals("")) {
-			UserDTO newUser = new UserDTO(cast.lastUser()+1, username, password, email);
+			int userID = cast.lastIndex("TBL_USERS","USER_ID") + 1;
+			UserDTO newUser = new UserDTO(userID, username, password, email);
 			cast.addUser(newUser);
 			//TODO : Can't check the email sending since my localhost has to support SMTP, the URL works manually however
 			session.setAttribute("userSess", username);
 			session.setAttribute("passSess", password);
-			sendEmail(email, cast.lastUser());
+			sendEmail(email, userID);
 			forwardPage = "redirect.html";
 		} else {
 			session.setAttribute("message", notLegit);

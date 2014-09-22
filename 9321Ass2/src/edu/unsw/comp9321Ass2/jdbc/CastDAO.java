@@ -10,7 +10,7 @@ public interface CastDAO {
 	
 	public UserDTO findUser(String username) throws EmptyResultException;
 	
-	public int lastUser() throws EmptyResultException;
+	public int lastIndex(String table, String primary) throws EmptyResultException;
 	
 	public boolean checkLogin(String username, String password) throws EmptyResultException;
 	
@@ -26,15 +26,15 @@ public interface CastDAO {
 	
 	public void editUser(String username, String email, String firstName, String lastName);
 	
-	public void addCinema(String location, int capacity, List<String> amenities);
-	
-	public int lastCinema() throws EmptyResultException;
-	
-	public int lastAmenity() throws EmptyResultException;
+	public void addCinema(String location, int capacity, List<String> amenities) throws EmptyResultException;
 	
 	public void addMovie(MovieDTO movie);
 	
 	public int lastMovie() throws EmptyResultException;
 	
 	public List<MovieDTO> getNowShowing(int noResults);
+	
+	public List<MovieDTO> searchMovieTitle(String search) throws EmptyResultException;
+	
+	public List<MovieDTO> searchMovieGenre(String search) throws EmptyResultException;
 }

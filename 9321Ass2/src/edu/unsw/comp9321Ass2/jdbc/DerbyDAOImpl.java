@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Blob;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +12,7 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -40,7 +40,6 @@ public class DerbyDAOImpl implements CastDAO {
 	public List<UserDTO> findAllUser() {
 		ArrayList<UserDTO> users = new ArrayList<UserDTO>();
 		try{
-			logger.info("In");
 			Statement stmnt = connection.createStatement();
 			String query_cast = "SELECT * from TBL_USERS";
 			ResultSet res = stmnt.executeQuery(query_cast);
@@ -86,25 +85,20 @@ public class DerbyDAOImpl implements CastDAO {
 		return user;
 	}
 	
-	/**
-	 * Find the id of last user
-	 * @throws EmptyResultException 
-	 * 
-	 */
-	public int lastUser() throws EmptyResultException {
-		int count = 0;
+	public int lastIndex(String table, String primary) throws EmptyResultException {
+		int index = 0;
 		try{
-			String count_query = "SELECT MAX(USER_ID) FROM TBL_USERS";
+			String count_query = "SELECT MAX("+primary+") FROM "+table;
 			PreparedStatement count_stmnt = connection.prepareStatement(count_query);
 			ResultSet count_res = count_stmnt.executeQuery();
 			count_res.next();
-			count = count_res.getInt(1);
+			index = count_res.getInt(1);
 		}catch(Exception e){
 			System.out.println("Caught Exception");
 			e.printStackTrace();
 			throw new EmptyResultException();
 		}
-		return count;
+		return index;
 	}
 	
 	/**
@@ -281,15 +275,15 @@ public class DerbyDAOImpl implements CastDAO {
 	// Admin related function
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public void addCinema(String location, int capacity, List<String> amenities) {
+	public void addCinema(String location, int capacity, List<String> amenities) throws EmptyResultException {
 		PreparedStatement stmnt = null; 
-		
+		int cinemaID = lastIndex("TBL_CINEMAS","CINEMA_ID")+1;
 		try{
 			String sqlStr = 
 				"INSERT INTO TBL_CINEMAS (CINEMA_ID, CINEMA_LOCATION, CINEMA_CAPACITY) "+
 				"VALUES (?,?,?)";
 			stmnt = connection.prepareStatement(sqlStr);
-			stmnt.setInt(1,lastCinema()+1);
+			stmnt.setInt(1,cinemaID);
 			stmnt.setString(2, location);
 			stmnt.setInt(3, capacity);
 			int result = stmnt.executeUpdate();
@@ -307,9 +301,9 @@ public class DerbyDAOImpl implements CastDAO {
 					"INSERT INTO TBL_CINEMA_AMENITIES (AMENITY_ID, AMENITY_NAME, AMENITY_CINEMA) "+
 					"VALUES (?,?,?)";
 				stmnt = connection.prepareStatement(sqlStr);
-				stmnt.setInt(1,lastAmenity()+1);
+				stmnt.setInt(1,lastIndex("TBL_CINEMA_AMENITIES","AMENITY_ID")+1);
 				stmnt.setString(2, amenity);
-				stmnt.setInt(3, lastCinema());
+				stmnt.setInt(3, cinemaID);
 				int result = stmnt.executeUpdate();
 				logger.info("Statement successfully executed "+result);
 				logger.info("Amenity has been registered to the database");
@@ -319,48 +313,6 @@ public class DerbyDAOImpl implements CastDAO {
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	/**
-	 * find the last id of cinema
-	 * @return
-	 * @throws EmptyResultException
-	 */
-	public int lastCinema() throws EmptyResultException {
-		int count = 0;
-		try{
-			String count_query = "SELECT MAX(CINEMA_ID) FROM TBL_CINEMAS";
-			PreparedStatement count_stmnt = connection.prepareStatement(count_query);
-			ResultSet count_res = count_stmnt.executeQuery();
-			count_res.next();
-			count = count_res.getInt(1);
-		}catch(Exception e){
-			System.out.println("Caught Exception");
-			e.printStackTrace();
-			throw new EmptyResultException();
-		}
-		return count;
-	}
-	
-	/**
-	 * find the last id of amenity
-	 * @return
-	 * @throws EmptyResultException
-	 */
-	public int lastAmenity() throws EmptyResultException {
-		int count = 0;
-		try{
-			String count_query = "SELECT MAX(AMENITY_ID) FROM TBL_CINEMA_AMENITIES";
-			PreparedStatement count_stmnt = connection.prepareStatement(count_query);
-			ResultSet count_res = count_stmnt.executeQuery();
-			count_res.next();
-			count = count_res.getInt(1);
-		}catch(Exception e){
-			System.out.println("Caught Exception");
-			e.printStackTrace();
-			throw new EmptyResultException();
-		}
-		return count;
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -397,12 +349,148 @@ public class DerbyDAOImpl implements CastDAO {
 			statement.setString(9,movie.getMovieName());
 			int result = statement.executeUpdate();
 			logger.info("Statement successfully executed "+result);
+			//Converting to list of string
 			statement.close();
+			List<String> actors_list = Arrays.asList(movie.getActors().split("\\s*,\\s*"));
+			addActors(actors_list, movie.getMovieID());
+			List<String> genres_list = Arrays.asList(movie.getGenre().split("\\s*,\\s*"));
+			addGenres(genres_list, movie.getMovieID());
 		} catch (SQLException e) {
 			System.out.println("Caught Exception");
 			e.printStackTrace();
 		}
 	}
+	
+	public MovieDTO findMovieByID(int id) throws EmptyResultException {
+		MovieDTO result = null;
+		try{
+			
+			String query_cast = "SELECT * FROM TBL_MOVIES WHERE MOVIE_ID = ?";
+			PreparedStatement stmnt = connection.prepareStatement(query_cast);
+			stmnt.setInt(1, id);
+			ResultSet res = stmnt.executeQuery();
+			res.next();
+			//TODO: I'm nulling the poster for now
+			result = new MovieDTO(res.getInt("MOVIE_ID"), res.getString("MOVIE_NAME"), res.getInt("MOVIE_TYPE"), res.getDate("RELEASE_DATE"), null, res.getString("GENRE"),
+					res.getString("DIRECTOR"), res.getString("SYNOPSIS"), res.getString("ACTORS"), res.getInt("AGE_RATING"));
+			//MovieDTO(int movieID, String movieName, int movieType, java.sql.Date releaseDate, InputStream poster, String genre,String director,String synopsis,String actors,int ageRating)
+		}catch(Exception e){
+			System.out.println("Caught Exception");
+			e.printStackTrace();
+			throw new EmptyResultException();
+		}
+		return result;
+	}
+	
+	/**
+	 * Returning list of all movie id and its title
+	 * @return
+	 */
+	public List<MovieDTO> findAllMovieTitle() {
+		List<MovieDTO> allMovieTitle = new ArrayList<MovieDTO>();
+		try{
+			Statement stmnt = connection.createStatement();
+			String query_cast = "SELECT * from TBL_MOVIES";
+			ResultSet res = stmnt.executeQuery(query_cast);
+			while(res.next()){
+				int id = res.getInt("MOVIE_ID");
+				String name = res.getString("MOVIE_NAME");
+				allMovieTitle.add(new MovieDTO(id, name));
+			}
+			res.close();
+			stmnt.close();
+			
+		}catch(Exception e){
+			System.out.println("Caught Exception");
+			e.printStackTrace();
+		}
+		return allMovieTitle;
+	}
+	
+	/**
+	 * Add all actors from a movie to the database
+	 * @param actors
+	 * @param movie_id
+	 */
+	public void addActors(List<String> actors, int movie_id) {
+		PreparedStatement stmnt = null;
+		int index = 0;
+		for(String actor : actors) {
+			try{
+				String sqlStr = 
+					"INSERT INTO TBL_MOVIE_ACTORS (ACTOR_ID, ACTOR_NAME, ACTOR_STATUS, ACTOR_MOVIE) "+
+					"VALUES (?,?,?,?)";
+				stmnt = connection.prepareStatement(sqlStr);
+				stmnt.setInt(1,lastIndex("TBL_MOVIE_ACTORS","ACTOR_ID")+1);
+				stmnt.setString(2, actor);
+				if(index == 0) {
+					stmnt.setString(3, "main");
+				} else {
+					stmnt.setString(3, "not main");
+				}
+				stmnt.setInt(4, movie_id);
+				int result = stmnt.executeUpdate();
+				logger.info("Statement successfully executed "+result);
+				logger.info("Actor has been registered to the database");
+				stmnt.close();
+			}catch(Exception e){
+				logger.severe("Unable to add actor! ");
+				e.printStackTrace();
+			}
+			index++;
+		}
+	}
+	
+	/**
+	 * Add all genres from a movie to the database
+	 * @param genres
+	 * @param movie_id
+	 */
+	public void addGenres(List<String> genres, int movie_id) {
+		PreparedStatement stmnt = null;
+		for(String genre : genres) {
+			try{
+				String sqlStr = 
+					"INSERT INTO TBL_MOVIE_GENRES (GENRE_ID, GENRE_NAME, GENRE_MOVIE) "+
+					"VALUES (?,?,?)";
+				stmnt = connection.prepareStatement(sqlStr);
+				stmnt.setInt(1,lastIndex("TBL_MOVIE_GENRES","GENRE_ID")+1);
+				stmnt.setString(2, genre);
+				stmnt.setInt(3, movie_id);
+				int result = stmnt.executeUpdate();
+				logger.info("Statement successfully executed "+result);
+				logger.info("Genre has been registered to the database");
+				stmnt.close();
+			}catch(Exception e){
+				logger.severe("Unable to add genre! ");
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Returning list of all genre id, name, and the related movie id
+	 * @return
+	 */
+	public List<GenreDTO> findAllMovieGenre() {
+		List<GenreDTO> allMovieGenre = new ArrayList<GenreDTO>();
+		try{
+			Statement stmnt = connection.createStatement();
+			String query_cast = "SELECT * from TBL_MOVIE_GENRES";
+			ResultSet res = stmnt.executeQuery(query_cast);
+			while(res.next()){
+				allMovieGenre.add(new GenreDTO(res.getInt("GENRE_ID"), res.getString("GENRE_NAME"), res.getInt("GENRE_MOVIE")));
+			}
+			res.close();
+			stmnt.close();
+			
+		}catch(Exception e){
+			System.out.println("Caught Exception");
+			e.printStackTrace();
+		}
+		return allMovieGenre;
+	}
+	
 	/**
 	 * Give id of the last movie in db
 	 */
@@ -460,5 +548,39 @@ public class DerbyDAOImpl implements CastDAO {
 		return movies;
 		
 	}
-
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Search and Comment related stuff
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * search for movies either using a word in the title
+	 * @param search
+	 * @return
+	 * @throws EmptyResultException 
+	 */
+	public List<MovieDTO> searchMovieTitle(String search) throws EmptyResultException {
+		List<MovieDTO> result = new ArrayList<MovieDTO>();
+		List<MovieDTO> allMovieTitle = findAllMovieTitle();
+		for(MovieDTO movie : allMovieTitle) {
+			if(movie.getMovieName().toLowerCase().contains(search.toLowerCase())) {
+				result.add(findMovieByID(movie.getMovieID()));
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Or genre
+	 * @throws EmptyResultException 
+	 */
+	public List<MovieDTO> searchMovieGenre(String search) throws EmptyResultException {
+		List<MovieDTO> result = new ArrayList<MovieDTO>();
+		List<GenreDTO> allMovieGenre = findAllMovieGenre();
+		for(GenreDTO genre : allMovieGenre) {
+			if(genre.getGenreName().toLowerCase().equals(search.toLowerCase())) {
+				result.add(findMovieByID(genre.getMovieID()));
+			}
+		}
+		return result;
+	}
 }

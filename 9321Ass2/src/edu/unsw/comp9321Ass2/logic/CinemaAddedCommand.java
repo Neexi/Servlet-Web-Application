@@ -24,7 +24,7 @@ public class CinemaAddedCommand implements Command {
 			List<String> amenities = Arrays.asList(request.getParameterValues("amenity"));
 			cast.addCinema(location, capacity, amenities);
 			session.setAttribute("message", "Cinema added");
-			forwardPage = "admin.jsp";
+			forwardPage = "redirect.html";
 		} else {
 			forwardPage = "reject2.jsp";
 		}

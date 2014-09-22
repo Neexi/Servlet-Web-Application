@@ -36,6 +36,33 @@ public class MovieDTO {
 		this.ageRating = ageRating;
 	}
 	
+	/**
+	 * The all constructor, needed to use findMovie method
+	 */
+	public MovieDTO(int movieID, String movieName, int movieType, java.sql.Date releaseDate, InputStream poster, String genre,
+			String director,String synopsis,String actors,int ageRating) {
+		this.movieID = movieID;
+		this.movieName = movieName;
+		this.movieType = movieType;
+		this.releaseDate = releaseDate;
+		this.poster = poster;
+		this.genre = genre;
+		this.director = director;
+		this.synopsis = synopsis;
+		this.actors = actors;
+		this.ageRating = ageRating;
+	}
+	
+	/**
+	 * Constructor for the one with ID and movie name only
+	 * @param movieID
+	 * @param movieName
+	 */
+	public MovieDTO(int movieID, String movieName) {
+		this.movieID = movieID;
+		this.movieName = movieName;
+	}
+	
 	
 	public int getMovieID() {
 		return movieID;

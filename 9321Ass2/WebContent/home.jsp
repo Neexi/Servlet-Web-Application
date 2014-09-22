@@ -29,6 +29,32 @@ if(logged == null || logged.equals("false")) {%>
 	<input type="submit" VALUE="Create New Account">
 	</div>
 </form>
+<% } else { %>
+<div align="right"><h2>Hello, <%= (String) request.getSession().getAttribute("userSess")%>!</h2>
+<form action="control" method="get">
+	<input type="hidden" name="action" value="edit profile">
+	<input type="submit" VALUE="Edit Profile">
+</form>
+<form action="control" method="get">
+	<input type="hidden" name="action" value="admin">
+	<input type="submit" VALUE="Admin Page">
+</form>
+<form action="control" method="get">
+	<input type="hidden" name="action" value="logout">
+	<input type="submit" VALUE="Log Out">
+</form>
+</div>
+<div align="center">
+<form action="control" method="get">
+	<h3>Search movie by its title or genre</h3>
+	<input type="hidden" name="action" value="search movie">
+	<input type="text" name="search" size="50"><br>
+	<input type="submit" VALUE="Search Movie">
+</form>
+</div>
+<% } %>
+
+
 <form action="control" method="get">
 <input type="hidden" name="action" value="newMovie">
 <input type="submit" VALUE="New movie">
@@ -37,23 +63,5 @@ if(logged == null || logged.equals("false")) {%>
 <h3>Now Showing</h3>
 
 <h3>Coming Soon</h3>
-
-
-<% } else { %>
-<div align="right"><h2>Hello, <%= (String) request.getSession().getAttribute("userSess")%>!</h2>
-<form action="control" method="get">
-<input type="hidden" name="action" value="edit profile">
-<input type="submit" VALUE="Edit Profile">
-</form>
-<form action="control" method="get">
-<input type="hidden" name="action" value="admin">
-<input type="submit" VALUE="Admin Page">
-</form>
-<form action="control" method="get">
-<input type="hidden" name="action" value="logout">
-<input type="submit" VALUE="Log Out">
-</form>
-</div>
-<% } %>
 </body>
 </html>
