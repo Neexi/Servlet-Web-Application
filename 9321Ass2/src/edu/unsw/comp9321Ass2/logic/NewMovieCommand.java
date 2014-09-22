@@ -10,8 +10,7 @@ public class NewMovieCommand implements Command {
 	@Override
 	public String execute(HttpServletRequest request,
 			HttpServletResponse response, CastDAO cast) {
-		// TODO Auto-generated method stub
-		return null;
+		return "addMovie.jsp";
 	}
 
 }
