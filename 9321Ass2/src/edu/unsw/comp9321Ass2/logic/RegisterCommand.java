@@ -10,8 +10,9 @@ public class RegisterCommand implements Command {
 	@Override
 	public String execute(HttpServletRequest request,
 			HttpServletResponse response, CastDAO cast) {
-		// TODO Auto-generated method stub
-		return null;
+		String forwardPage;
+		forwardPage = "register.jsp";
+		return forwardPage;
 	}
 
 }

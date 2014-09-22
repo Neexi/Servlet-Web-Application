@@ -43,24 +43,25 @@ public class ControlServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	static Logger logger = Logger.getLogger(ControlServlet.class.getName());
 	private CastDAO cast;
+	private HashMap<String, Command> commands;
 	
 	public void init() throws ServletException{
 		super.init();
-    	HashMap commands = new HashMap();
-    	
+    	HashMap<String, Command> commands = new HashMap<String, Command>();
     	commands.put("login",new LoginCommand());
     	commands.put("logout",new LogoutCommand());
     	commands.put("edit profile",new EditProfileCommand());
     	commands.put("commit edit",new CommitEditCommand());
     	commands.put("register",new RegisterCommand());
-    	commands.put("activate",new LoginCommand());
+    	commands.put("create account",new CreateAccountCommand());
+    	commands.put("activate",new ActivateCommand());
     	commands.put("newMovie",new NewMovieCommand());
     	commands.put("addMovie",new AddMovieCommand());
     	commands.put("return",new ReturnCommand());
     	commands.put("admin",new AdminCommand());
     	commands.put("add cinema",new AddCinemaCommand());
     	commands.put("cinema added",new CinemaAddedCommand());
-    	
+    	this.commands = commands;
     	
     }
        
@@ -109,11 +110,19 @@ public class ControlServlet extends HttpServlet {
 	 * @throws EmptyResultException 
 	 */
 	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, EmptyResultException {
-		String forwardPage = "";
 		HttpSession session = request.getSession();
 		session.setAttribute("message", ""); //Resetting message session attribute after it has been sent
 		String action = request.getParameter("action");
-		logger.info("Action is " + action);
+		String next;
+		if(action==null){
+			next = "home.jsp";
+		}else{
+			logger.info("Action is " + action);
+			Command cmd = resolveCommand(request);
+			next = cmd.execute(request, response,cast);
+		}
+		
+		/*
 		if(action==null){
 			forwardPage = "home.jsp";
 		} else if(action.equals("login")) { 
@@ -260,94 +269,15 @@ public class ControlServlet extends HttpServlet {
 				forwardPage = "reject2.jsp";
 			}
 		}
+		*/
 		session.setAttribute("logged",String.valueOf(cast.checkLogin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))));
-		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/"+forwardPage);
+		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/"+next);
 		dispatcher.forward(request, response);
 	}
 	
-	/**
-	 * Returning the problem with the account creation
-	 * @param username
-	 * @param password
-	 * @param email
-	 * @return
-	 * @throws EmptyResultException
-	 */
-	private String legitimateNewAccount(String username, String password, String email) throws EmptyResultException {
-		String notLegit = "";
-		//TODO : More proper parameter check
-		if(cast.existUser(username)) {
-			notLegit = "Username already exists";
-		} else if(username.length() < 4) {
-			notLegit = "Username is too short";
-		} else if(username.length() > 25) {
-			notLegit = "Username is too long";
-		} else if(password.length() < 4) {
-			notLegit = "Password is too short";
-		} else if(password.length() > 50) {
-			notLegit = "Password is too long";
-		} else if(email == null) {
-			notLegit = "Email can't be empty";
-		} else if(password.length() > 50) {
-			notLegit = "Email is too long";
-		} 
-		return notLegit;
-	}
-	
-	private String legitimateEditProfile(String email) throws EmptyResultException {
-		String notLegit = "";
-		//TODO : More proper parameter check
-		return notLegit;
-	}
-	
-	/**
-	 * Sending activation email of specific user
-	 * @param email
-	 * @param userID
-	 */
-	private void sendEmail(String email, int userID) {
-		// Recipient's email ID needs to be mentioned.
-	      String to = email;
-
-	      // Sender's email ID needs to be mentioned
-	      String from = "CFMovieCo.net";
-
-	      // Assuming you are sending email from localhost
-	      String host = "localhost";
-
-	      // Get system properties
-	      Properties properties = System.getProperties();
-
-	      // Setup mail server
-	      properties.setProperty("mail.smtp.host", host);
-
-	      // Get the default Session object.
-	      Session session = Session.getDefaultInstance(properties);
-
-	      try{
-	         // Create a default MimeMessage object.
-	         MimeMessage message = new MimeMessage(session);
-
-	         // Set From: header field of the header.
-	         message.setFrom(new InternetAddress(from));
-
-	         // Set To: header field of the header.
-	         message.addRecipient(Message.RecipientType.TO,
-	                                  new InternetAddress(to));
-
-	         // Set Subject: header field
-	         message.setSubject("Activation Email");
-	         String messageBody = ("Please activate your account using following link : <br>" + "<a href =\'http://localhost:8080/9321Ass2/control?action=activate&id="+userID+"\'>");
-	         // Send the actual HTML message, as big as you like
-	         message.setContent(messageBody,
-	                            "text/html" );
-
-	         // Send message
-	         Transport.send(message);
-	         System.out.println("Sent message successfully....");
-	      }catch (MessagingException mex) {
-	         mex.printStackTrace();
-	      }
+	private Command resolveCommand(HttpServletRequest request) { 
+		Command cmd = (Command) commands.get(request.getParameter("action"));
+		return cmd;
 	}
 
 }
