@@ -23,7 +23,7 @@ public class MovieDTO {
 	/*
 	 * MovieType(Out now/not out) is not taken because it can be generated from release date.
 	 */
-	public MovieDTO(int movieID, String movieName, Date releaseDate, InputStream poster, String genre,
+	public MovieDTO(int movieID, String movieName, java.sql.Date releaseDate, InputStream poster, String genre,
 					String director,String synopsis,String actors,int ageRating) {
 		this.movieID = movieID;
 		this.movieName = movieName;

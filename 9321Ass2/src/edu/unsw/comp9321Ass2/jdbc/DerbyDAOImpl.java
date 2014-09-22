@@ -1,6 +1,7 @@
 package edu.unsw.comp9321Ass2.jdbc;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -361,17 +362,35 @@ public class DerbyDAOImpl implements CastDAO {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Movie related function
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+	/*
+	 * MOVIE_ID INTEGER CONSTRAINT MOVIE_ID PRIMARY KEY,
+	MOVIE_NAME VARCHAR(100),
+	MOVIE_TYPE INTEGER,
+	RELEASE_DATE DATE,
+	POSTER BLOB,
+	GENRE VARCHAR(200),
+	DIRECTOR VARCHAR(200),
+	SYNOPSIS VARCHAR(2000),
+	ACTORS VARCHAR(200),
+	AGE_RATING INTEGER
+	 */
 	/**
 	 * Adding a movie to the movie table in the database
 	 */
 	public void addMovie(MovieDTO movie) {
 		//Right now only testing adding a image file called poster
 		try {
-			String sql = "INSERT INTO TBL_MOVIES (MOVIE_ID,POSTER) values (?,?)";
+			String sql = "INSERT INTO TBL_MOVIES (MOVIE_ID,RELEASE_DATE,POSTER,GENRE,DIRECTOR,SYNOPSIS,ACTORS,AGE_RATING,MOVIE_NAME) values (?,?,?,?,?,?,?,?,?)";
 			PreparedStatement statement = connection.prepareStatement(sql);
-			statement.setInt(1,1);
-			statement.setBlob(2, movie.getPoster());
+			statement.setInt(1,movie.getMovieID());
+			statement.setDate(2,(java.sql.Date) movie.getReleaseDate());
+			statement.setBlob(3, movie.getPoster());
+			statement.setString(4,movie.getGenre());
+			statement.setString(5,movie.getDirector());
+			statement.setString(6,movie.getSynopsis());
+			statement.setString(7,movie.getActors());
+			statement.setInt(8,movie.getAgeRating());
+			statement.setString(9,movie.getMovieName());
 			int result = statement.executeUpdate();
 			logger.info("Statement successfully executed "+result);
 			statement.close();
@@ -379,6 +398,24 @@ public class DerbyDAOImpl implements CastDAO {
 			System.out.println("Caught Exception");
 			e.printStackTrace();
 		}
+	}
+	/**
+	 * Give id of the last movie in db
+	 */
+	public int lastMovie() throws EmptyResultException {
+		int count = 0;
+		try{
+			String count_query = "SELECT MAX(MOVIE_ID) FROM TBL_MOVIES";
+			PreparedStatement count_stmnt = connection.prepareStatement(count_query);
+			ResultSet count_res = count_stmnt.executeQuery();
+			count_res.next();
+			count = count_res.getInt(1);
+		}catch(Exception e){
+			System.out.println("Caught Exception");
+			e.printStackTrace();
+			throw new EmptyResultException();
+		}
+		return count;
 	}
 
 }

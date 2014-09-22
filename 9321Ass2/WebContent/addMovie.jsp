@@ -21,7 +21,7 @@
                 </tr>
                 <tr>
                     <td>Genre(s): </td>
-                    <td><input type="text" name="genre" size="50"/></td>
+                    <td><input type="text" name="genres" size="50"/></td>
                 </tr>
                 <tr>
                     <td>Director: </td>
@@ -37,7 +37,13 @@
                 </tr>
                 <tr>
                     <td>Release date: </td>
-                    <td><input type="text" name="release_date" size="50"/></td>
+                    <td>Date
+                    <input type="text" name="release_date" size="2"/>
+                    Month
+                    <input type="text" name="release_month" size="2"/>
+                    Year
+                    <input type="text" name="release_year" size="2"/>
+                    </td>
                 </tr>
                 <tr>
                     <td>Poster: </td>

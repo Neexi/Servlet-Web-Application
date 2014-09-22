@@ -33,4 +33,6 @@ public interface CastDAO {
 	public int lastAmenity() throws EmptyResultException;
 	
 	public void addMovie(MovieDTO movie);
+	
+	public int lastMovie() throws EmptyResultException;
 }
