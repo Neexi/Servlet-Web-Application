@@ -11,7 +11,7 @@ public class ReturnCommand implements Command {
 	public String execute(HttpServletRequest request,
 			HttpServletResponse response, CastDAO cast) {
 		// TODO Auto-generated method stub
-		return null;
+		return "home.jsp";
 	}
 
 }
