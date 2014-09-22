@@ -43,7 +43,6 @@ public class ControlServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	static Logger logger = Logger.getLogger(ControlServlet.class.getName());
 	private CastDAO cast;
-	private boolean logged; //login status
 	
 	public void init() throws ServletException{
 		super.init();
@@ -72,7 +71,6 @@ public class ControlServlet extends HttpServlet {
      */
     public ControlServlet() throws ServletException, EmptyResultException {
         super();
-        logged = false;
         try {
 			cast = new DerbyDAOImpl();
 		} catch (ServiceLocatorException e) {
@@ -116,11 +114,6 @@ public class ControlServlet extends HttpServlet {
 		session.setAttribute("message", ""); //Resetting message session attribute after it has been sent
 		String action = request.getParameter("action");
 		logger.info("Action is " + action);
-		if(logged == false) {
-			if(cast.checkLogin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))) {
-				logged = true;
-			}
-		}
 		if(action==null){
 			forwardPage = "home.jsp";
 		} else if(action.equals("login")) { 
@@ -141,7 +134,6 @@ public class ControlServlet extends HttpServlet {
 				logger.info(session.getAttribute("userSess")+" is now logged out");
 				session.setAttribute("userSess","");
 				session.setAttribute("passSess","");
-				logged=false;
 				session.setAttribute("message", "You are now logged out");
 			} else {
 				forwardPage = "reject1.jsp";
@@ -268,7 +260,7 @@ public class ControlServlet extends HttpServlet {
 				forwardPage = "reject2.jsp";
 			}
 		}
-		session.setAttribute("logged",String.valueOf(logged));
+		session.setAttribute("logged",String.valueOf(cast.checkLogin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))));
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/"+forwardPage);
 		dispatcher.forward(request, response);
 	}
