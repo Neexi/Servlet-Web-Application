@@ -1,5 +1,9 @@
 package edu.unsw.comp9321Ass2.jdbc;
 
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -416,6 +420,45 @@ public class DerbyDAOImpl implements CastDAO {
 			throw new EmptyResultException();
 		}
 		return count;
+	}
+	
+	public List<MovieDTO> getNowShowing(int noResults){
+		List<MovieDTO> movies = new ArrayList<MovieDTO>();
+		System.out.println("infunction");
+		try{
+			Statement stmnt = connection.createStatement();
+			ResultSet results = stmnt.executeQuery("SELECT * FROM TBL_MOVIES WHERE RELEASE_DATE >= current_date");
+			System.out.println("infunction2");
+			while(results.next()){
+				int movieID = results.getInt("MOVIE_ID");
+				String movieName = results.getString("MOVIE_NAME");
+				Blob blob = results.getBlob("POSTER");
+				InputStream poster = blob.getBinaryStream();
+				String filePath = "src/tmpImages/" + movieID + ".jpg";
+				//THIS ^^^ IS A PITA
+				//http://www.coderanch.com/t/360049/Servlets/java/contextpath-read-write-text-files
+				//NOT SURE WHERE TO STORE IMAGES
+				//HELP
+				System.out.println(filePath);
+				OutputStream outputStream = new FileOutputStream(filePath);
+				int bytesRead = -1;
+                byte[] buffer = new byte[4096];
+                while ((bytesRead = poster.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+                outputStream.close();
+				movies.add(new MovieDTO(movieID, null, null, poster, null,
+		        		null,null,null,1));
+			}
+			results.close();
+			stmnt.close();
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+			logger.severe("Failed to get moveies "+e.getStackTrace());
+		}
+		//movies = movies.subList(1, noResults-1);
+		return movies;
+		
 	}
 
 }

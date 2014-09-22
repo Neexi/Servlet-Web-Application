@@ -48,6 +48,7 @@ public class ControlServlet extends HttpServlet {
 	public void init() throws ServletException{
 		super.init();
     	HashMap<String, Command> commands = new HashMap<String, Command>();
+    	commands.put("home",new HomeCommand());
     	commands.put("login",new LoginCommand());
     	commands.put("logout",new LogoutCommand());
     	commands.put("edit profile",new EditProfileCommand());
@@ -114,13 +115,15 @@ public class ControlServlet extends HttpServlet {
 		session.setAttribute("message", ""); //Resetting message session attribute after it has been sent
 		String action = request.getParameter("action");
 		String next;
+		Command cmd;
 		if(action==null){
-			next = "home.jsp";
+			cmd = new HomeCommand();
 		}else{
-			logger.info("Action is " + action);
-			Command cmd = resolveCommand(request);
-			next = cmd.execute(request, response,cast);
+			cmd = resolveCommand(request);
 		}
+		logger.info("Action is " + action);
+		next = cmd.execute(request, response,cast);
+		
 		
 		/*
 		if(action==null){
