@@ -48,19 +48,20 @@ public class ControlServlet extends HttpServlet {
 	public void init() throws ServletException{
 		super.init();
     	HashMap commands = new HashMap();
-    	/*
-    	commands.put("login",new loginCommand());
-    	commands.put("logout",new loginCommand());
-    	commands.put("edit profile",new loginCommand());
-    	commands.put("commit edit",new loginCommand());
-    	commands.put("register",new loginCommand());
-    	commands.put("activate",new loginCommand());
-    	commands.put("newMovie",new loginCommand());
-    	commands.put("addMovie",new loginCommand());
-    	commands.put("addMovie",new loginCommand());
-    	commands.put("addMovie",new loginCommand());
-    	//It seems like ur admin implementation will screw up the command pattern?
-    	*/
+    	
+    	commands.put("login",new LoginCommand());
+    	commands.put("logout",new LogoutCommand());
+    	commands.put("edit profile",new EditProfileCommand());
+    	commands.put("commit edit",new CommitEditCommand());
+    	commands.put("register",new RegisterCommand());
+    	commands.put("activate",new LoginCommand());
+    	commands.put("newMovie",new NewMovieCommand());
+    	commands.put("addMovie",new AddMovieCommand());
+    	commands.put("return",new ReturnCommand());
+    	commands.put("admin",new AdminCommand());
+    	commands.put("add cinema",new AddCinemaCommand());
+    	commands.put("cinema added",new CinemaAddedCommand());
+    	
     	
     }
        
