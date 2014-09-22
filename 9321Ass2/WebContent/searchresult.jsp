@@ -8,8 +8,21 @@
 <title>CF Movie Co</title>
 </head>
 <body>
+<form action="control" method="get">
+	<div align="right">
+	<input type="hidden" name="action" value="return">
+	<input type="submit" VALUE="Return to Home Page">
+	</div>
+</form>
 <div align="center">
-<h2>You have searched <%= request.getParameter("search") %></h2>
+<h3>You have searched <%= request.getParameter("search") %></h3>
+<form action="control" method="get">
+	<h3>New Search</h3>
+	<input type="hidden" name="action" value="search movie">
+	<input type="text" name="search" size="50"><br>
+	<input type="submit" VALUE="Search Movie">
+</form>
+<% if(request.getParameter("search").trim().length() > 0) { %>
 <% List<MovieDTO> matchTitle = (List<MovieDTO>)request.getAttribute("titleMatch"); %>
 <% if(matchTitle.size() > 0) { %>
 	<h3>Matches Title</h3>
@@ -41,6 +54,12 @@
 		<td></td></tr>
 	<% } %>
 	</table>
+<% } %>
+<% if(matchTitle.size() == 0 && matchGenre.size() == 0) {%>
+	<h3>No result found</h3>
+<% } %>
+<% } else { %>
+	<h3>Please insert the search criteria</h3>
 <% } %>
 </div>
 </body>
