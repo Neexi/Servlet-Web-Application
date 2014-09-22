@@ -43,7 +43,6 @@ public class ControlServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	static Logger logger = Logger.getLogger(ControlServlet.class.getName());
 	private CastDAO cast;
-	private int lastUserID;
 	private boolean logged; //login status
 	
 	public void init() throws ServletException{
@@ -74,7 +73,6 @@ public class ControlServlet extends HttpServlet {
         logged = false;
         try {
 			cast = new DerbyDAOImpl();
-			lastUserID = cast.countUser();
 		} catch (ServiceLocatorException e) {
 			logger.severe("Trouble connecting to database "+e.getStackTrace());
 			throw new ServletException();
@@ -188,11 +186,12 @@ public class ControlServlet extends HttpServlet {
 			String email = request.getParameter("email");
 			String notLegit = legitimateNewAccount(username, password, email);
 			if(notLegit.equals("")) {
-				UserDTO newUser = new UserDTO(lastUserID+1, username, password, email);
-				lastUserID++;
+				UserDTO newUser = new UserDTO(cast.lastUser()+1, username, password, email);
 				cast.addUser(newUser);
 				//TODO : Can't check the email sending since my localhost has to support SMTP, the URL works manually however
-				sendEmail(email, lastUserID);
+				session.setAttribute("userSess", username);
+				session.setAttribute("passSess", password);
+				sendEmail(email, cast.lastUser());
 				forwardPage = "redirect.html";
 			} else {
 				session.setAttribute("message", notLegit);

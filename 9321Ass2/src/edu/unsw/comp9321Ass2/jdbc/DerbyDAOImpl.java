@@ -18,15 +18,11 @@ public class DerbyDAOImpl implements CastDAO {
 
 	static Logger logger = Logger.getLogger(DerbyDAOImpl.class.getName());
 	private Connection connection;
-	private int lastCinemaID;
-	private int lastAmenityID;
 	DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
 	
 	public DerbyDAOImpl() throws ServiceLocatorException, SQLException, EmptyResultException{
 		connection = DBConnectionFactory.getConnection();
 		logger.info("Got connection");
-		lastCinemaID = countCinema();
-		lastAmenityID = countAmenity();
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,14 +82,14 @@ public class DerbyDAOImpl implements CastDAO {
 	}
 	
 	/**
-	 * Count the number of users
+	 * Find the id of last user
 	 * @throws EmptyResultException 
 	 * 
 	 */
-	public int countUser() throws EmptyResultException {
+	public int lastUser() throws EmptyResultException {
 		int count = 0;
 		try{
-			String count_query = "SELECT COUNT(*) FROM TBL_USERS";
+			String count_query = "SELECT MAX(USER_ID) FROM TBL_USERS";
 			PreparedStatement count_stmnt = connection.prepareStatement(count_query);
 			ResultSet count_res = count_stmnt.executeQuery();
 			count_res.next();
@@ -288,13 +284,12 @@ public class DerbyDAOImpl implements CastDAO {
 				"INSERT INTO TBL_CINEMAS (CINEMA_ID, CINEMA_LOCATION, CINEMA_CAPACITY) "+
 				"VALUES (?,?,?)";
 			stmnt = connection.prepareStatement(sqlStr);
-			stmnt.setInt(1,lastCinemaID+1);
+			stmnt.setInt(1,lastCinema()+1);
 			stmnt.setString(2, location);
 			stmnt.setInt(3, capacity);
 			int result = stmnt.executeUpdate();
 			logger.info("Statement successfully executed "+result);
 			logger.info("Cinema has been registered to the database");
-			lastCinemaID++;
 			stmnt.close();
 		}catch(Exception e){
 			logger.severe("Unable to add cinema! ");
@@ -307,13 +302,12 @@ public class DerbyDAOImpl implements CastDAO {
 					"INSERT INTO TBL_CINEMA_AMENITIES (AMENITY_ID, AMENITY_NAME, AMENITY_CINEMA) "+
 					"VALUES (?,?,?)";
 				stmnt = connection.prepareStatement(sqlStr);
-				stmnt.setInt(1,lastAmenityID+1);
+				stmnt.setInt(1,lastAmenity()+1);
 				stmnt.setString(2, amenity);
-				stmnt.setInt(3, lastCinemaID);
+				stmnt.setInt(3, lastCinema());
 				int result = stmnt.executeUpdate();
 				logger.info("Statement successfully executed "+result);
 				logger.info("Amenity has been registered to the database");
-				lastAmenityID++;
 				stmnt.close();
 			}catch(Exception e){
 				logger.severe("Unable to add amenity! ");
@@ -323,14 +317,14 @@ public class DerbyDAOImpl implements CastDAO {
 	}
 	
 	/**
-	 * Count the number of cinema
+	 * find the last id of cinema
 	 * @return
 	 * @throws EmptyResultException
 	 */
-	public int countCinema() throws EmptyResultException {
+	public int lastCinema() throws EmptyResultException {
 		int count = 0;
 		try{
-			String count_query = "SELECT COUNT(*) FROM TBL_CINEMAS";
+			String count_query = "SELECT MAX(CINEMA_ID) FROM TBL_CINEMAS";
 			PreparedStatement count_stmnt = connection.prepareStatement(count_query);
 			ResultSet count_res = count_stmnt.executeQuery();
 			count_res.next();
@@ -344,14 +338,14 @@ public class DerbyDAOImpl implements CastDAO {
 	}
 	
 	/**
-	 * Count the number of amenity
+	 * find the last id of amenity
 	 * @return
 	 * @throws EmptyResultException
 	 */
-	public int countAmenity() throws EmptyResultException {
+	public int lastAmenity() throws EmptyResultException {
 		int count = 0;
 		try{
-			String count_query = "SELECT COUNT(*) FROM TBL_CINEMA_AMENITIES";
+			String count_query = "SELECT MAX(AMENITY_ID) FROM TBL_CINEMA_AMENITIES";
 			PreparedStatement count_stmnt = connection.prepareStatement(count_query);
 			ResultSet count_res = count_stmnt.executeQuery();
 			count_res.next();
