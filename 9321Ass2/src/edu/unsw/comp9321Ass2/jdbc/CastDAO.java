@@ -30,6 +30,8 @@ public interface CastDAO {
 	
 	public void addMovie(MovieDTO movie);
 	
+	public MovieDTO findMovieByID(int id) throws EmptyResultException;
+	
 	public int lastMovie() throws EmptyResultException;
 	
 	public List<MovieDTO> getNowShowing(int noResults);

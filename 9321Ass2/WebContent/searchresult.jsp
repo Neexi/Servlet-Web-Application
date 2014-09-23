@@ -15,11 +15,10 @@
 	</div>
 </form>
 <div align="center">
-<h3>You have searched <%= request.getParameter("search") %></h3>
 <form action="control" method="get">
-	<h3>New Search</h3>
+	<h3>Search</h3>
 	<input type="hidden" name="action" value="search movie">
-	<input type="text" name="search" size="50"><br>
+	<input type="text" name="search" value=<%= request.getParameter("search")%> size="50"><br>
 	<input type="submit" VALUE="Search Movie">
 </form>
 <% if(request.getParameter("search").trim().length() > 0) { %>
@@ -35,7 +34,7 @@
 		<td><%= movie.getGenre() %></td>
 		<td><%= movie.getActors() %></td>
 		<td></td>
-		<td></td></tr>
+		<td><a href="./control?action=movie+detail&movieID=<%= movie.getMovieID()%>">Detail</a></td></tr>
 	<% } %>
 	</table>
 <% } %>
@@ -51,7 +50,7 @@
 		<td><%= movie.getGenre() %></td>
 		<td><%= movie.getActors() %></td>
 		<td></td>
-		<td></td></tr>
+		<td><a href="./control?action=movie+detail&movieID=<%= movie.getMovieID()%>">Detail</a></td></tr>
 	<% } %>
 	</table>
 <% } %>
