@@ -18,7 +18,7 @@
 <form action="control" method="get">
 	<h3>Search</h3>
 	<input type="hidden" name="action" value="search movie">
-	<input type="text" name="search" value=<%= request.getParameter("search")%> size="50"><br>
+	<input type="text" name="search" value="<%= request.getParameter("search")%>" size="50"><br>
 	<input type="submit" VALUE="Search Movie">
 </form>
 <% if(request.getParameter("search").trim().length() > 0) { %>

@@ -13,6 +13,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -489,6 +490,53 @@ public class DerbyDAOImpl implements CastDAO {
 			e.printStackTrace();
 		}
 		return allMovieGenre;
+	}
+	
+	/**
+	 * Add a review of a movie
+	 */
+	public void addReview(int movieID, String review_paragraph, int review_rating, String review_name) {
+		PreparedStatement stmnt = null;
+		try{
+			String sqlStr = 
+				"INSERT INTO TBL_MOVIE_REVIEWS (REVIEW_ID, REVIEW_PARAGRAPH, MOVIE_ID, REVIEW_RATING, REVIEW_DATE, REVIEW_NAME) "+
+				"VALUES (?,?,?,?,?,?)";
+			stmnt = connection.prepareStatement(sqlStr);
+			stmnt.setInt(1,lastIndex("TBL_MOVIE_REVIEWS","REVIEW_ID")+1);
+			stmnt.setString(2, review_paragraph);
+			stmnt.setInt(3, movieID);
+			stmnt.setInt(4, review_rating);
+			stmnt.setString(5, fmt.format(new Date()));
+			stmnt.setString(6, review_name);
+			int result = stmnt.executeUpdate();
+			logger.info("Statement successfully executed "+result);
+			logger.info("Review has been registered to the database");
+			stmnt.close();
+		}catch(Exception e){
+			logger.severe("Unable to add review! ");
+			e.printStackTrace();
+		}
+	}
+	
+	public List<ReviewDTO> getMovieReview(int movieID) {
+		List<ReviewDTO> reviews = new ArrayList<ReviewDTO>();
+		try{
+			String query_cast = "SELECT * FROM TBL_MOVIE_REVIEWS WHERE MOVIE_ID = ?";
+			PreparedStatement stmnt = connection.prepareStatement(query_cast);
+			stmnt.setInt(1, movieID);
+			ResultSet res = stmnt.executeQuery();
+			while(res.next()){
+				reviews.add(new ReviewDTO(res.getInt("REVIEW_ID"), res.getString("REVIEW_PARAGRAPH"), res.getInt("MOVIE_ID"), 
+						res.getString("REVIEW_DATE"), res.getInt("REVIEW_RATING"), res.getString("REVIEW_NAME")));
+			}
+			res.close();
+			stmnt.close();
+			
+		}catch(Exception e){
+			System.out.println("Caught Exception");
+			e.printStackTrace();
+		}
+		return reviews;
 	}
 	
 	/**

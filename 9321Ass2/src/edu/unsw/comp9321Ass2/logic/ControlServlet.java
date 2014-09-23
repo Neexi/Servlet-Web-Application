@@ -64,6 +64,7 @@ public class ControlServlet extends HttpServlet {
     	commands.put("cinema added",new CinemaAddedCommand());
     	commands.put("search movie",new SearchMovieCommand());
     	commands.put("movie detail",new MovieDetailCommand());
+    	commands.put("add review",new AddReviewCommand());
     	this.commands = commands;
     	
     }
