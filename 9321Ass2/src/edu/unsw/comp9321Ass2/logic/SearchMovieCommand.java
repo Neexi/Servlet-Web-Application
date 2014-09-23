@@ -22,6 +22,7 @@ public class SearchMovieCommand implements Command {
 			request.setAttribute("titleMatch", titleMatch);
 			request.setAttribute("genreMatch", genreMatch);
 			request.setAttribute("search", search);
+			request.setAttribute("cast", cast);
 			forwardPage = "searchresult.jsp";
 		} else {
 			forwardPage = "reject1.jsp";

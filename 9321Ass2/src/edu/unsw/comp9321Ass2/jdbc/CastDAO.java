@@ -28,6 +28,8 @@ public interface CastDAO {
 	
 	public void addCinema(String location, int capacity, List<String> amenities) throws EmptyResultException;
 	
+	public List<CinemaDTO> findAllCinema();
+	
 	public void addMovie(MovieDTO movie);
 	
 	public MovieDTO findMovieByID(int id) throws EmptyResultException;
@@ -43,4 +45,6 @@ public interface CastDAO {
 	public List<MovieDTO> searchMovieGenre(String search) throws EmptyResultException;
 
 	public List<ReviewDTO> getMovieReview(int movieID);
+	
+	public float getMovieRating(int movieID);
 }

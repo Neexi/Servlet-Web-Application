@@ -24,7 +24,6 @@ public class AddMovieCommand implements Command {
 		//logger.info("ADDING A MOVIE");
 		String forwardPage;
 		InputStream inputStream = null;
-		
 		String title = request.getParameter("title");
 		String actors = request.getParameter("actors");
 		String genres = request.getParameter("genres");

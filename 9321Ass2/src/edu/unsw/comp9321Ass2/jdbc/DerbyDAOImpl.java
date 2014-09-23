@@ -24,7 +24,7 @@ public class DerbyDAOImpl implements CastDAO {
 
 	static Logger logger = Logger.getLogger(DerbyDAOImpl.class.getName());
 	private Connection connection;
-	DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+	DateFormat fmt = new SimpleDateFormat("dd-MM-yyyy");
 	
 	public DerbyDAOImpl() throws ServiceLocatorException, SQLException, EmptyResultException{
 		connection = DBConnectionFactory.getConnection();
@@ -316,6 +316,32 @@ public class DerbyDAOImpl implements CastDAO {
 		}
 	}
 	
+	/**
+	 * Returning list of all movie id and its title
+	 * @return
+	 */
+	public List<CinemaDTO> findAllCinema() {
+		List<CinemaDTO> allCinemas = new ArrayList<CinemaDTO>();
+		try{
+			Statement stmnt = connection.createStatement();
+			String query_cast = "SELECT * from TBL_CINEMAS";
+			ResultSet res = stmnt.executeQuery(query_cast);
+			while(res.next()){
+				int cinemaID = res.getInt("CINEMA_ID");
+				String location = res.getString("CINEMA_LOCATION");
+				int capacity = res.getInt("CINEMA_CAPACITY");
+				allCinemas.add(new CinemaDTO(cinemaID, location, capacity));
+			}
+			res.close();
+			stmnt.close();
+			
+		}catch(Exception e){
+			System.out.println("Caught Exception");
+			e.printStackTrace();
+		}
+		return allCinemas;
+	}
+	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Movie related function
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -518,6 +544,9 @@ public class DerbyDAOImpl implements CastDAO {
 		}
 	}
 	
+	/**
+	 * Get the list of review from a movie
+	 */
 	public List<ReviewDTO> getMovieReview(int movieID) {
 		List<ReviewDTO> reviews = new ArrayList<ReviewDTO>();
 		try{
@@ -537,6 +566,37 @@ public class DerbyDAOImpl implements CastDAO {
 			e.printStackTrace();
 		}
 		return reviews;
+	}
+	
+	/**
+	 * Return the average rating of a movie
+	 * @param movieID
+	 * @return
+	 */
+	public float getMovieRating(int movieID) {
+		float result = 0;
+		float total = 0;
+		int count = 0;
+		try{
+			String query_cast = "SELECT * FROM TBL_MOVIE_REVIEWS WHERE MOVIE_ID = ?";
+			PreparedStatement stmnt = connection.prepareStatement(query_cast);
+			stmnt.setInt(1, movieID);
+			ResultSet res = stmnt.executeQuery();
+			while(res.next()){
+				total += res.getInt("REVIEW_RATING");
+				count++;
+			}
+			res.close();
+			stmnt.close();
+			
+		}catch(Exception e){
+			System.out.println("Caught Exception");
+			e.printStackTrace();
+		}
+		if(count > 0) {
+			result = total/count;
+		}
+		return result;
 	}
 	
 	/**

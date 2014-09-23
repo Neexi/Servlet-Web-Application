@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import="edu.unsw.comp9321Ass2.jdbc.MovieDTO, java.util.Arrays, java.util.List, java.util.Date,edu.unsw.comp9321Ass2.jdbc.ReviewDTO"%>
+<%@ page import="edu.unsw.comp9321Ass2.jdbc.MovieDTO, java.util.Arrays, java.util.List, java.util.Date,edu.unsw.comp9321Ass2.jdbc.ReviewDTO,java.text.DateFormat,java.text.SimpleDateFormat"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -19,7 +19,10 @@ if (message != null && !message.equals("")) {%>
 <% } %>
 Movie Poster Here<br>
 </div>
-<b>Release Date	: </b> <%= movie.getReleaseDate()%><br><br>
+<%Date date = movie.getReleaseDate();  // wherever you get this
+DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+String text = df.format(date); %>
+<b>Release Date	: </b> <%= text%><br><br>
 <b>Genre	:</b>
 <ul>
   <% for(String genre : genres_list) {%>
@@ -35,7 +38,7 @@ Movie Poster Here<br>
   <% } %>
 </ul>
 <b>Age Rating :</b> <%= movie.getAgeRating()%><br><br>
-<% if(movie.getReleaseDate().before(new Date())) { %>
+<% if(!movie.getReleaseDate().after(new Date())) { %>
 <form action='control' method='get'>
 		<input type='hidden' name='action' value='add review'>
 		<input type="hidden" name="movieID" value="<%= movie.getMovieID()%>">
