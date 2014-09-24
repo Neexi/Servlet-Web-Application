@@ -623,7 +623,7 @@ public class DerbyDAOImpl implements CastDAO {
 		System.out.println("infunction");
 		try{
 			Statement stmnt = connection.createStatement();
-			ResultSet results = stmnt.executeQuery("SELECT * FROM TBL_MOVIES WHERE RELEASE_DATE >= current_date");
+			ResultSet results = stmnt.executeQuery("SELECT * FROM TBL_MOVIES WHERE RELEASE_DATE <= current_date");
 			System.out.println("infunction2");
 			while(results.next()){
 				int movieID = results.getInt("MOVIE_ID");

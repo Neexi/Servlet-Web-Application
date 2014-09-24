@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import="edu.unsw.comp9321Ass2.jdbc.MovieDTO, java.util.Arrays, java.util.List, java.util.Date,edu.unsw.comp9321Ass2.jdbc.ReviewDTO,java.text.DateFormat,java.text.SimpleDateFormat"%>
+<%@ page import="edu.unsw.comp9321Ass2.jdbc.MovieDTO, java.util.Arrays, java.util.List, java.util.Date,edu.unsw.comp9321Ass2.jdbc.ReviewDTO,java.text.DateFormat,java.text.SimpleDateFormat,
+edu.unsw.comp9321Ass2.jdbc.DerbyDAOImpl"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -8,9 +9,20 @@
 <title>CF Movie Co</title>
 </head>
 <body>
+<% DerbyDAOImpl cast = (DerbyDAOImpl)request.getSession().getAttribute("cast"); %>
 <% MovieDTO movie = (MovieDTO)request.getAttribute("movie"); %>
 <% List<String> actors_list = Arrays.asList(movie.getActors().split("\\s*,\\s*")); %>
 <% List<String> genres_list = Arrays.asList(movie.getGenre().split("\\s*,\\s*")); %>
+<div align="right">
+<% if(cast.checkAdmin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess")) &&
+		!movie.getReleaseDate().after(new Date())) {%>
+	<form action="control" method="get">
+	<input type="hidden" name="action" value="add movie showtime">
+	<input type="hidden" name="movieID" value=<%= movie.getMovieID() %>>
+	<input type="submit" VALUE="Add Showtime">
+</form>
+<% } %>
+</div>
 <div align="center">
 <h1><%= movie.getMovieName()%></h1>
 <% String message = (String) request.getSession().getAttribute("message"); 

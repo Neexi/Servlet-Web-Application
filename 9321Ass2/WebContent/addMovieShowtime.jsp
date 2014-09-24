@@ -15,6 +15,7 @@
 	<h2><font color="red"><%= message %></font></h2>
 	<% } %>
 	</div>
+<h3>Select Cinema</h3>	
 </form>
 </body>
 </html>
