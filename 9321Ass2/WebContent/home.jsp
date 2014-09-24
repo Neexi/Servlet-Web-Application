@@ -17,8 +17,7 @@ if (message != null && !message.equals("")) {%>
 <% } else {%>
 <div align="center"><h1>Welcome to CF Movie</h1></div>
 <% } %>
-<% String logged = (String) request.getSession().getAttribute("logged");
-if(logged == null || logged.equals("false")) {%> 
+<% if(!cast.checkLogin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))) { %>
 <form action="control" method="get">
 	<div align="right">
 	<input type="hidden" name="action" value="login">

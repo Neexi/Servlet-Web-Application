@@ -20,7 +20,6 @@ public class LoginCommand implements Command {
 			session.setAttribute("userSess",username);
 			session.setAttribute("passSess",password);
 			//TODO: Proper Session timeout (need discussing)
-			//logger.info(username+" is now logged in");
 			forwardPage = "redirect1.html";
 		} else {
 			session.setAttribute("message", "Incorrect Username or Password, please retry");

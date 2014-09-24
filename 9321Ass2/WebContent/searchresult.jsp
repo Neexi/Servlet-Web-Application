@@ -25,46 +25,48 @@
 	<input type="text" name="search" value="<%= request.getParameter("search")%>" size="50"><br>
 	<input type="submit" VALUE="Search Movie">
 </form>
-<% if(request.getParameter("search").trim().length() > 0) { %>
-<% List<MovieDTO> matchTitle = (List<MovieDTO>)request.getAttribute("titleMatch"); %>
-<% if(matchTitle.size() > 0) { %>
-	<h3>Matches Title</h3>
-	<table border=1>
-	<col width="200"><col width="100"><col width="200"><col width="200"><col width="50"><col width="100">
-	<tr><b><th>Title</th><th>Poster</th><th>Genre</th><th>Actor</th><th>Rating</th><th>Detail</th></b></tr>
-	<% for(MovieDTO movie : matchTitle) { %>
-		<% float rating = cast.getMovieRating(movie.getMovieID());%>
-		<tr><td><%= movie.getMovieName() %></td>
-		<td></td>
-		<td><%= movie.getGenre() %></td>
-		<td><%= movie.getActors() %></td>
-		<td><% if(rating > 0) { %>
-		<%= rating%>
+<% if(request.getParameter("search") != null && request.getParameter("search").trim().length() > 0) { %>
+	<% List<MovieDTO> matchTitle = new ArrayList<MovieDTO>(); %>
+	<% if(request.getAttribute("titleMatch") != null) matchTitle = (List<MovieDTO>)request.getAttribute("titleMatch"); %>
+	<% if(matchTitle.size() > 0) { %>
+		<h3>Matches Title</h3>
+		<table border=1>
+		<col width="200"><col width="100"><col width="200"><col width="200"><col width="50"><col width="100">
+		<tr><b><th>Title</th><th>Poster</th><th>Genre</th><th>Actor</th><th>Rating</th><th>Detail</th></b></tr>
+		<% for(MovieDTO movie : matchTitle) { %>
+			<% float rating = cast.getMovieRating(movie.getMovieID());%>
+			<tr><td><%= movie.getMovieName() %></td>
+			<td></td>
+			<td><%= movie.getGenre() %></td>
+			<td><%= movie.getActors() %></td>
+			<td><% if(rating > 0) { %>
+			<%= rating%>
+			<% } %>
+			</td>
+			<td><a href="./control?action=movie+detail&movieID=<%= movie.getMovieID()%>">Detail</a></td></tr>
 		<% } %>
-		</td>
-		<td><a href="./control?action=movie+detail&movieID=<%= movie.getMovieID()%>">Detail</a></td></tr>
+		</table>
 	<% } %>
-	</table>
-<% } %>
-<% List<MovieDTO> matchGenre = (List<MovieDTO>)request.getAttribute("genreMatch"); %>
-<% if(matchGenre.size() > 0) { %>
-	<h3>Matches Genre</h3>
-	<table border=1>
-	<col width="200"><col width="100"><col width="200"><col width="200"><col width="50"><col width="100">
-	<tr><b><th>Title</th><th>Poster</th><th>Genre</th><th>Actor</th><th>Rating</th><th>Detail</th></b></tr>
-	<% for(MovieDTO movie : matchGenre) { %>
-		<tr><td><%= movie.getMovieName() %></td>
-		<td></td>
-		<td><%= movie.getGenre() %></td>
-		<td><%= movie.getActors() %></td>
-		<td></td>
-		<td><a href="./control?action=movie+detail&movieID=<%= movie.getMovieID()%>">Detail</a></td></tr>
+	<% List<MovieDTO> matchGenre = new ArrayList<MovieDTO>(); %>
+	<% if(request.getAttribute("genreMatch") != null) matchGenre = (List<MovieDTO>)request.getAttribute("genreMatch"); %>
+	<% if(matchGenre.size() > 0) { %>
+		<h3>Matches Genre</h3>
+		<table border=1>
+		<col width="200"><col width="100"><col width="200"><col width="200"><col width="50"><col width="100">
+		<tr><b><th>Title</th><th>Poster</th><th>Genre</th><th>Actor</th><th>Rating</th><th>Detail</th></b></tr>
+		<% for(MovieDTO movie : matchGenre) { %>
+			<tr><td><%= movie.getMovieName() %></td>
+			<td></td>
+			<td><%= movie.getGenre() %></td>
+			<td><%= movie.getActors() %></td>
+			<td></td>
+			<td><a href="./control?action=movie+detail&movieID=<%= movie.getMovieID()%>">Detail</a></td></tr>
+		<% } %>
+		</table>
 	<% } %>
-	</table>
-<% } %>
-<% if(matchTitle.size() == 0 && matchGenre.size() == 0) {%>
-	<h3>No result found</h3>
-<% } %>
+	<% if(matchTitle.size() == 0 && matchGenre.size() == 0) {%>
+		<h3>No result found</h3>
+	<% } %>
 <% } else { %>
 	<h3>Please insert the search criteria</h3>
 <% } %>

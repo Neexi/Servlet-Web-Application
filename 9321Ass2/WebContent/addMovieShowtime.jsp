@@ -18,27 +18,29 @@
 	<input type="submit" VALUE="Return to Home Page">
 </form>
 </div>
-<% MovieDTO movie = (MovieDTO)request.getAttribute("movie"); %>
-	<div align="center">
-	<h1>Add Movie Showtime</h1>
-	<h3><%= movie.getMovieName() %></h3>
-	<% String message = (String) request.getSession().getAttribute("message"); 
-	if (message != null && !message.equals("")) {%>
-	<h2><font color="red"><%= message %></font></h2>
+<% if(request.getAttribute("movie") != null) { %>
+	<% MovieDTO movie = (MovieDTO)request.getAttribute("movie"); %>
+		<div align="center">
+		<h1>Add Movie Showtime</h1>
+		<h3><%= movie.getMovieName() %></h3>
+		<% String message = (String) request.getSession().getAttribute("message"); 
+		if (message != null && !message.equals("")) {%>
+		<h2><font color="red"><%= message %></font></h2>
+		<% } %>
+		</div>
+	<h3>Select Cinema, (Date format is dd/MM/YYYY)</h3>
+	<% List<CinemaDTO> cinemas = (List<CinemaDTO>)request.getAttribute("cinemas"); %>
+	<% for(CinemaDTO cinema : cinemas) { %>
+		<%= cinema.getLocation()%> cinema with capacity of <%= cinema.getCapacity()%><br>
+			<form action="control" method="post">
+			<input type="hidden" name="action" value="movie showtime added">
+			<input type="hidden" name="cinemaID" value="<%= cinema.getCinemaID()%>">
+			<input type="hidden" name="movieID" value="<%= movie.getMovieID()%>">
+			<input type="text" name="date" size="50">
+			<input type="submit" VALUE="Add">
+			<br>
+			</form>
 	<% } %>
-	</div>
-<h3>Select Cinema, (Date format is dd/MM/YYYY)</h3>
-<% List<CinemaDTO> cinemas = (List<CinemaDTO>)request.getAttribute("cinemas"); %>
-<% for(CinemaDTO cinema : cinemas) { %>
-	<%= cinema.getLocation()%> cinema with capacity of <%= cinema.getCapacity()%><br>
-		<form action="control" method="post">
-		<input type="hidden" name="action" value="movie showtime added">
-		<input type="hidden" name="cinemaID" value="<%= cinema.getCinemaID()%>">
-		<input type="hidden" name="movieID" value="<%= movie.getMovieID()%>">
-		<input type="text" name="date" size="50">
-		<input type="submit" VALUE="Add">
-		<br>
-		</form>
 <% } %>	
 </body>
 </html>
