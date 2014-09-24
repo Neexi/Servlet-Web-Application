@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import="edu.unsw.comp9321Ass2.jdbc.MovieDTO, java.util.Arrays, java.util.List, java.util.Date,edu.unsw.comp9321Ass2.jdbc.ReviewDTO,java.text.DateFormat,java.text.SimpleDateFormat,
-edu.unsw.comp9321Ass2.jdbc.DerbyDAOImpl"%>
+<%@ page import="edu.unsw.comp9321Ass2.jdbc.*,java.util.*,java.text.DateFormat,java.text.SimpleDateFormat"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>

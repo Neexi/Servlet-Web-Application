@@ -1,5 +1,6 @@
 package edu.unsw.comp9321Ass2.logic;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,10 +22,13 @@ public class CinemaAddedCommand implements Command {
 			//TODO: proper checking for adding cinema(like capacity has to be number, etc)
 			String location = request.getParameter("location");
 			int capacity = Integer.parseInt(request.getParameter("capacity"));
-			List<String> amenities = Arrays.asList(request.getParameterValues("amenity"));
+			List<String> amenities = new ArrayList<String>();
+			if(request.getParameterValues("amenity") != null) {
+				amenities = Arrays.asList(request.getParameterValues("amenity"));
+			}
 			cast.addCinema(location, capacity, amenities);
 			session.setAttribute("message", "Cinema added");
-			forwardPage = "redirect.html";
+			forwardPage = "redirect1.html";
 		} else {
 			forwardPage = "reject2.jsp";
 		}

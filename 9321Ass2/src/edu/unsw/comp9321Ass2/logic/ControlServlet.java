@@ -3,6 +3,7 @@ package edu.unsw.comp9321Ass2.logic;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -67,6 +68,7 @@ public class ControlServlet extends HttpServlet {
     	commands.put("movie detail",new MovieDetailCommand());
     	commands.put("add review",new AddReviewCommand());
     	commands.put("add movie showtime",new AddMovieShowTimeCommand());
+    	commands.put("movie showtime added",new MovieShowTimeAddedCommand());
     	this.commands = commands;
     	this.servletFilePath = getServletContext().getRealPath("/");
     	System.out.println(this.servletFilePath);
@@ -95,7 +97,15 @@ public class ControlServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			processRequest(request,response);
+			try {
+				processRequest(request,response);
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (EmptyResultException e) {
 			e.printStackTrace();
 		}
@@ -109,14 +119,22 @@ public class ControlServlet extends HttpServlet {
 			processRequest(request,response);
 		} catch (EmptyResultException e) {
 			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
 	/**
 	 * Main servlet function of controlling forward page
 	 * @throws EmptyResultException 
+	 * @throws ParseException 
+	 * @throws IllegalStateException 
 	 */
-	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, EmptyResultException {
+	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, EmptyResultException, IllegalStateException, ParseException {
 		HttpSession session = request.getSession();
 		session.setAttribute("message", ""); //Resetting message session attribute after it has been sent
 		String action = request.getParameter("action");

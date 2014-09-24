@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -342,6 +343,49 @@ public class DerbyDAOImpl implements CastDAO {
 		return allCinemas;
 	}
 	
+	public void addMovieShowtime(int movieID, int cinemaID, java.sql.Date date) throws ParseException {
+		PreparedStatement stmnt = null;
+		try{
+			String sqlStr = 
+				"INSERT INTO TBL_MOVIE_SHOWTIMES (MOVIE_SHOWTIME_ID, MOVIE_ID, CINEMA_ID, MOVIE_DATE) "+
+				"VALUES (?,?,?,?)";
+			stmnt = connection.prepareStatement(sqlStr);
+			stmnt.setInt(1,lastIndex("TBL_MOVIE_SHOWTIMES","MOVIE_SHOWTIME_ID")+1);
+			stmnt.setInt(2, movieID);
+			stmnt.setInt(3, cinemaID);
+			stmnt.setDate(4, date);
+			int result = stmnt.executeUpdate();
+			logger.info("Statement successfully executed "+result);
+			logger.info("Movie Showtime has been registered to the database");
+			stmnt.close();
+		}catch(Exception e){
+			logger.severe("Unable to add Movie Showtime! ");
+			e.printStackTrace();
+		}
+	}
+	
+	public boolean availableMovieShowtime(int cinemaID, java.sql.Date date) throws ParseException {
+		boolean available = true;
+		PreparedStatement stmnt = null;
+		try{
+			String sqlStr = 
+				"SELECT COUNT(*) FROM TBL_MOVIE_SHOWTIMES WHERE CINEMA_ID = ? AND MOVIE_DATE = ?";
+			stmnt = connection.prepareStatement(sqlStr);
+			stmnt.setInt(1, cinemaID);
+			stmnt.setDate(2, date);
+			ResultSet count_res = stmnt.executeQuery();
+			count_res.next();
+			if(count_res.getInt(1) > 0) {
+				available = false;
+			}
+			stmnt.close();
+		}catch(Exception e){
+			logger.severe("Error in searching movie showtimes! ");
+			e.printStackTrace();
+		}
+		return available;
+	}
+	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Movie related function
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -631,7 +675,7 @@ public class DerbyDAOImpl implements CastDAO {
 				Blob blob = results.getBlob("POSTER");
 				InputStream poster = blob.getBinaryStream();
 				String filePath = path + "tmpImages/" + movieID + ".jpg";
-				System.out.println(filePath);
+				//System.out.println(filePath);
 				OutputStream outputStream = new FileOutputStream(filePath);
 				int bytesRead = -1;
                 byte[] buffer = new byte[4096];
@@ -639,7 +683,7 @@ public class DerbyDAOImpl implements CastDAO {
                     outputStream.write(buffer, 0, bytesRead);
                 }
                 outputStream.close();
-                System.out.println(movieID);
+                //System.out.println(movieID);
 				movies.add(new MovieDTO(movieID, movieName, null, poster, null,
 		        		null,null,null,1));
 			}

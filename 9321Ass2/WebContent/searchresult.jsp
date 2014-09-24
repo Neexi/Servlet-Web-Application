@@ -5,6 +5,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<% DerbyDAOImpl cast = (DerbyDAOImpl)request.getSession().getAttribute("cast"); %>
+<% if(!cast.checkLogin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))) { %>
+<meta http-equiv="refresh" content="0; url=./reject1.jsp" />
+<% } %>
 <title>CF Movie Co</title>
 </head>
 <body>
@@ -23,7 +27,6 @@
 </form>
 <% if(request.getParameter("search").trim().length() > 0) { %>
 <% List<MovieDTO> matchTitle = (List<MovieDTO>)request.getAttribute("titleMatch"); %>
-<% DerbyDAOImpl cast = (DerbyDAOImpl)request.getAttribute("cast");%>
 <% if(matchTitle.size() > 0) { %>
 	<h3>Matches Title</h3>
 	<table border=1>

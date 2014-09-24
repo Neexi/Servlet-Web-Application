@@ -1,5 +1,6 @@
 package edu.unsw.comp9321Ass2.jdbc;
 
+import java.text.ParseException;
 import java.util.List;
 
 import edu.unsw.comp9321Ass2.exception.EmptyResultException;
@@ -29,6 +30,10 @@ public interface CastDAO {
 	public void addCinema(String location, int capacity, List<String> amenities) throws EmptyResultException;
 	
 	public List<CinemaDTO> findAllCinema();
+	
+	public void addMovieShowtime(int movieID, int cinemaID, java.sql.Date date) throws ParseException ;
+	
+	public boolean availableMovieShowtime(int cinemaID, java.sql.Date date) throws ParseException;
 	
 	public void addMovie(MovieDTO movie);
 	
