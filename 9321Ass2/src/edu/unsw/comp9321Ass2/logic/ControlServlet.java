@@ -277,6 +277,7 @@ public class ControlServlet extends HttpServlet {
 			}
 		}
 		*/
+		session.setAttribute("cast", cast);
 		session.setAttribute("logged",String.valueOf(cast.checkLogin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))));
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/"+next);
 		dispatcher.forward(request, response);

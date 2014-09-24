@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ page import="edu.unsw.comp9321Ass2.jdbc.DerbyDAOImpl"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -7,6 +8,7 @@
 <title>CF Movie Co</title>
 </head>
 <body>
+<% DerbyDAOImpl cast = (DerbyDAOImpl)request.getSession().getAttribute("cast"); %>
 <% String message = (String) request.getSession().getAttribute("message"); 
 if (message != null && !message.equals("")) {%>
 <div align="center"><h2><%= message %></h2></div>
@@ -35,10 +37,12 @@ if(logged == null || logged.equals("false")) {%>
 	<input type="hidden" name="action" value="edit profile">
 	<input type="submit" VALUE="Edit Profile">
 </form>
+<% if(cast.checkAdmin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))) {%>
 <form action="control" method="get">
 	<input type="hidden" name="action" value="admin">
 	<input type="submit" VALUE="Admin Page">
 </form>
+<% } %>
 <form action="control" method="get">
 	<input type="hidden" name="action" value="logout">
 	<input type="submit" VALUE="Log Out">
