@@ -44,11 +44,12 @@ public class ControlServlet extends HttpServlet {
 	static Logger logger = Logger.getLogger(ControlServlet.class.getName());
 	private CastDAO cast;
 	private HashMap<String, Command> commands;
+	private String servletFilePath;
 	
 	public void init() throws ServletException{
 		super.init();
     	HashMap<String, Command> commands = new HashMap<String, Command>();
-    	commands.put("home",new HomeCommand());
+    	commands.put("home",new HomeCommand(servletFilePath));
     	commands.put("login",new LoginCommand());
     	commands.put("logout",new LogoutCommand());
     	commands.put("edit profile",new EditProfileCommand());
@@ -67,7 +68,8 @@ public class ControlServlet extends HttpServlet {
     	commands.put("add review",new AddReviewCommand());
     	commands.put("add movie showtime",new AddMovieShowTimeCommand());
     	this.commands = commands;
-    	
+    	this.servletFilePath = getServletContext().getRealPath("/");
+    	System.out.println(this.servletFilePath);
     }
        
     /**
@@ -121,7 +123,7 @@ public class ControlServlet extends HttpServlet {
 		String next;
 		Command cmd;
 		if(action==null){
-			cmd = new HomeCommand();
+			cmd = new HomeCommand(servletFilePath);
 		}else{
 			cmd = resolveCommand(request);
 		}

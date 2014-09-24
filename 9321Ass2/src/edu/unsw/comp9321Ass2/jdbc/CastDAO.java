@@ -38,7 +38,7 @@ public interface CastDAO {
 	
 	public void addReview(int movieID, String review_paragraph, int review_rating, String review_name);
 	
-	public List<MovieDTO> getNowShowing(int noResults);
+	public List<MovieDTO> getNowShowing(int noResults,String path);
 	
 	public List<MovieDTO> searchMovieTitle(String search) throws EmptyResultException;
 	

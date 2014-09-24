@@ -12,13 +12,17 @@ import edu.unsw.comp9321Ass2.jdbc.CastDAO;
 
 public class HomeCommand implements Command {
 
+	private String filePath;
+	public HomeCommand(String filePath){
+		this.filePath = filePath;
+	}
 	@Override
 	public String execute(HttpServletRequest request,
 			HttpServletResponse response, CastDAO cast)
 			throws IllegalStateException, IOException, ServletException,
 			EmptyResultException {
 		String forwardPage = "home.jsp";
-		request.setAttribute("nowShowing", cast.getNowShowing(3));
+		request.setAttribute("nowShowing", cast.getNowShowing(3,filePath));
 		return forwardPage;
 	}
 

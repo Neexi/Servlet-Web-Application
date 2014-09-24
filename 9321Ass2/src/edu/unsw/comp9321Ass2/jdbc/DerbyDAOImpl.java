@@ -618,7 +618,7 @@ public class DerbyDAOImpl implements CastDAO {
 		return count;
 	}
 	
-	public List<MovieDTO> getNowShowing(int noResults){
+	public List<MovieDTO> getNowShowing(int noResults, String path){
 		List<MovieDTO> movies = new ArrayList<MovieDTO>();
 		System.out.println("infunction");
 		try{
@@ -630,7 +630,7 @@ public class DerbyDAOImpl implements CastDAO {
 				String movieName = results.getString("MOVIE_NAME");
 				Blob blob = results.getBlob("POSTER");
 				InputStream poster = blob.getBinaryStream();
-				String filePath = "src/tmpImages/" + movieID + ".jpg";
+				String filePath = path + "tmpImages/" + movieID + ".jpg";
 				//THIS ^^^ IS A PITA
 				//http://www.coderanch.com/t/360049/Servlets/java/contextpath-read-write-text-files
 				//NOT SURE WHERE TO STORE IMAGES
