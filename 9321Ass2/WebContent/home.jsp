@@ -74,6 +74,9 @@ if(logged == null || logged.equals("false")) {%>
 		<td>
 			<img src="${pageContext.request.contextPath}/tmpImages/${movie.movieID}.jpg" alt="poster" height="42" width="42">
 		</td>
+		<td>
+			${movie.movieName}
+		</td>
 	</tr>
 	</table>			
 </c:forEach>
