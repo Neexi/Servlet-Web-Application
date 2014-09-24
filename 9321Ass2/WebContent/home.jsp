@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="edu.unsw.comp9321Ass2.jdbc.DerbyDAOImpl"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -65,6 +67,16 @@ if(logged == null || logged.equals("false")) {%>
 </form>
 
 <h3>Now Showing</h3>
+
+<c:forEach items="${nowShowing}" var="movie">
+	<table>
+	<tr>
+		<td>
+			<img src="${pageContext.request.contextPath}/tmpImages/${movie.movieID}.jpg" alt="poster" height="42" width="42">
+		</td>
+	</tr>
+	</table>			
+</c:forEach>
 
 <h3>Coming Soon</h3>
 </body>

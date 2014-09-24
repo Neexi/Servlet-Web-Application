@@ -643,6 +643,7 @@ public class DerbyDAOImpl implements CastDAO {
                     outputStream.write(buffer, 0, bytesRead);
                 }
                 outputStream.close();
+                System.out.println(movieID);
 				movies.add(new MovieDTO(movieID, null, null, poster, null,
 		        		null,null,null,1));
 			}
