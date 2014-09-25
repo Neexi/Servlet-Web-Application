@@ -6,7 +6,7 @@
 <head>
 <% DerbyDAOImpl cast = (DerbyDAOImpl)request.getSession().getAttribute("cast"); %>
 <% if(!cast.checkAdmin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))) { %>
-<meta http-equiv="refresh" content="0; url=./reject2.jsp" />
+<meta http-equiv="refresh" content="0; url=./control?action=reject2" />
 <% } %>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>CF Movie Co</title>
