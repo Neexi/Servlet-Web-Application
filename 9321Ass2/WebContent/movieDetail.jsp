@@ -33,6 +33,13 @@
 	<div align="center"><h2><%= message %></h2></div>
 	<% } %>
 	Movie Poster Here<br>
+	<% if(!movie.getReleaseDate().after(new Date())) { %>
+		<form action="control" method="get">
+		<input type="hidden" name="action" value="check movie showtime">
+		<input type="hidden" name="movieID" value=<%= movie.getMovieID() %>>
+		<input type="submit" VALUE="Check Movie Showtime">
+		</form>
+	<% } %>
 	</div>
 	<%Date date = movie.getReleaseDate();  // wherever you get this
 	DateFormat df = new SimpleDateFormat("dd/MM/yyyy");

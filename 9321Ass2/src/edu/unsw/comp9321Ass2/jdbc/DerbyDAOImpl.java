@@ -343,18 +343,46 @@ public class DerbyDAOImpl implements CastDAO {
 		return allCinemas;
 	}
 	
+	/**
+	 * Return a cinema based on it's ID
+	 * @param id
+	 * @return
+	 * @throws EmptyResultException
+	 */
+	public CinemaDTO findCinemaByID(int id) throws EmptyResultException {
+		CinemaDTO result = null;
+		try{
+			
+			String query_cast = "SELECT * FROM TBL_CINEMAS WHERE CINEMA_ID = ?";
+			PreparedStatement stmnt = connection.prepareStatement(query_cast);
+			stmnt.setInt(1, id);
+			ResultSet res = stmnt.executeQuery();
+			res.next();
+			int cinemaID = res.getInt("CINEMA_ID");
+			String location = res.getString("CINEMA_LOCATION");
+			int capacity = res.getInt("CINEMA_CAPACITY");
+			result = new CinemaDTO(cinemaID, location, capacity);
+		}catch(Exception e){
+			System.out.println("Caught Exception");
+			e.printStackTrace();
+			throw new EmptyResultException();
+		}
+		return result;
+	}
+	
 	public void addMovieShowtime(int movieID, int cinemaID, java.sql.Date date, java.sql.Time time) throws ParseException {
 		PreparedStatement stmnt = null;
 		try{
 			String sqlStr = 
-				"INSERT INTO TBL_MOVIE_SHOWTIMES (MOVIE_SHOWTIME_ID, MOVIE_ID, CINEMA_ID, MOVIE_DATE, MOVIE_TIME) "+
-				"VALUES (?,?,?,?,?)";
+				"INSERT INTO TBL_MOVIE_SHOWTIMES (MOVIE_SHOWTIME_ID, MOVIE_ID, CINEMA_ID, MOVIE_DATE, MOVIE_TIME, BOOKED) "+
+				"VALUES (?,?,?,?,?,?)";
 			stmnt = connection.prepareStatement(sqlStr);
 			stmnt.setInt(1,lastIndex("TBL_MOVIE_SHOWTIMES","MOVIE_SHOWTIME_ID")+1);
 			stmnt.setInt(2, movieID);
 			stmnt.setInt(3, cinemaID);
 			stmnt.setDate(4, date);
 			stmnt.setTime(5, time);
+			stmnt.setInt(6, 0);
 			int result = stmnt.executeUpdate();
 			logger.info("Statement successfully executed "+result);
 			logger.info("Movie Showtime has been registered to the database");
@@ -365,6 +393,9 @@ public class DerbyDAOImpl implements CastDAO {
 		}
 	}
 	
+	/**
+	 * check if the movie time is still available to be added at that specific cinema, date, time
+	 */
 	public boolean availableMovieShowtime(int cinemaID, java.sql.Date date, java.sql.Time time) throws ParseException {
 		boolean available = true;
 		PreparedStatement stmnt = null;
@@ -387,6 +418,39 @@ public class DerbyDAOImpl implements CastDAO {
 		}
 		return available;
 	}
+	
+	/**
+	 * Return the list of cinema and the showtimes detail which has specific movie
+	 * @param id
+	 * @return
+	 * @throws EmptyResultException
+	 */
+	public List<ShowtimeDTO> findMovieShowtimebyMovieID(int id) throws EmptyResultException {
+		List<ShowtimeDTO> showtimeList = new ArrayList<ShowtimeDTO>();
+		try{
+			
+			String query_cast = "SELECT * FROM TBL_MOVIE_SHOWTIMES WHERE MOVIE_ID = ?";
+			PreparedStatement stmnt = connection.prepareStatement(query_cast);
+			stmnt.setInt(1, id);
+			ResultSet res = stmnt.executeQuery();
+			while(res.next()){
+				int showtimeID = res.getInt("MOVIE_SHOWTIME_ID");
+				int movieID = id;
+				int cinemaID = res.getInt("CINEMA_ID");
+				java.sql.Date movieDate = res.getDate("MOVIE_DATE");
+				java.sql.Time movieTime = res.getTime("MOVIE_TIME");
+				int booked = res.getInt("BOOKED");
+				showtimeList.add(new ShowtimeDTO(showtimeID, movieID, cinemaID, movieDate, movieTime, booked));
+			}
+		}catch(Exception e){
+			System.out.println("Caught Exception");
+			e.printStackTrace();
+			throw new EmptyResultException();
+		}
+		return showtimeList;
+	}
+	
+	
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Movie related function

@@ -71,6 +71,7 @@ public class ControlServlet extends HttpServlet {
     	commands.put("movie showtime added",new MovieShowTimeAddedCommand());
     	commands.put("reject1", new Reject1Command());
     	commands.put("reject2", new Reject2Command());
+    	commands.put("check movie showtime",new CheckMovieShowtimeCommand());
     	this.commands = commands;
     	this.servletFilePath = getServletContext().getRealPath("/");
     	System.out.println(this.servletFilePath);

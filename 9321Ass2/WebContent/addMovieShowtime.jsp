@@ -29,18 +29,20 @@
 		<% } %>
 		</div>
 	<h3>Select Cinema, (Date format is dd/MM/YYYY, Time format is hh:mm)</h3>
-	<% List<CinemaDTO> cinemas = (List<CinemaDTO>)request.getAttribute("cinemas"); %>
-	<% for(CinemaDTO cinema : cinemas) { %>
-		<%= cinema.getLocation()%> cinema with capacity of <%= cinema.getCapacity()%><br>
-			<form action="control" method="post">
-			<input type="hidden" name="action" value="movie showtime added">
-			<input type="hidden" name="cinemaID" value="<%= cinema.getCinemaID()%>">
-			<input type="hidden" name="movieID" value="<%= movie.getMovieID()%>">
-			<b>Date:</b><input type="text" name="date" size="50">
-			<b>Time:</b><input type="text" name="time" size="50">
-			<input type="submit" VALUE="Add">
-			<br>
-			</form>
+	<% if(request.getAttribute("cinemas") != null) { %>	
+		<% List<CinemaDTO> cinemas = (List<CinemaDTO>)request.getAttribute("cinemas"); %>
+		<% for(CinemaDTO cinema : cinemas) { %>
+			<%= cinema.getLocation()%> cinema with capacity of <%= cinema.getCapacity()%><br>
+				<form action="control" method="post">
+				<input type="hidden" name="action" value="movie showtime added">
+				<input type="hidden" name="cinemaID" value="<%= cinema.getCinemaID()%>">
+				<input type="hidden" name="movieID" value="<%= movie.getMovieID()%>">
+				<b>Date:</b><input type="text" name="date" size="50">
+				<b>Time:</b><input type="text" name="time" size="50">
+				<input type="submit" VALUE="Add">
+				<br>
+				</form>
+		<% } %>
 	<% } %>
 <% } %>	
 </body>
