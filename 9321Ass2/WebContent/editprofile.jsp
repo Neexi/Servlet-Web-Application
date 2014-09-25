@@ -12,7 +12,7 @@
 <title>CF Movie Co</title>
 </head>
 <body>
-<form action="control" method="get">
+<form action="control" method="post" enctype="multipart/form-data">
 	<div align="center">
 	<h1>Edit Your Profile</h1>
 	<% String message = (String) request.getSession().getAttribute("message"); 

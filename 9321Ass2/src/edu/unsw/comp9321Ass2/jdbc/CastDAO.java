@@ -37,6 +37,8 @@ public interface CastDAO {
 	
 	public boolean availableMovieShowtime(int cinemaID, java.sql.Date date, java.sql.Time time) throws ParseException;
 	
+	public ShowtimeDTO findMovieShowtimebyID(int id) throws EmptyResultException;
+	
 	public List<ShowtimeDTO> findMovieShowtimebyMovieID(int id) throws EmptyResultException;
 	
 	public void addMovie(MovieDTO movie);
@@ -56,4 +58,8 @@ public interface CastDAO {
 	public List<ReviewDTO> getMovieReview(int movieID);
 	
 	public float getMovieRating(int movieID);
+	
+	public void setBooked(int showtimeID, int amount);
+	
+	public void addBooking(int showtimeID, int userID, int amount) throws EmptyResultException;
 }

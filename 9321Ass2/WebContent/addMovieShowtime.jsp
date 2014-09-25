@@ -33,7 +33,7 @@
 		<% List<CinemaDTO> cinemas = (List<CinemaDTO>)request.getAttribute("cinemas"); %>
 		<% for(CinemaDTO cinema : cinemas) { %>
 			<%= cinema.getLocation()%> cinema with capacity of <%= cinema.getCapacity()%><br>
-				<form action="control" method="post">
+				<form action="control" method="post" enctype="multipart/form-data">
 				<input type="hidden" name="action" value="movie showtime added">
 				<input type="hidden" name="cinemaID" value="<%= cinema.getCinemaID()%>">
 				<input type="hidden" name="movieID" value="<%= movie.getMovieID()%>">

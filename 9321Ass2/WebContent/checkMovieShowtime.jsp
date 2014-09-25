@@ -32,7 +32,7 @@
 	<% int index = 0; %>
 	<% if(showtimeList.size() > 0) { %>
 		<table border="1">
-		<col width="150"><col width="100"><col width="100"><col width="100"><col width="100"><col width="200">
+		<col width="150"><col width="100"><col width="100"><col width="100"><col width="100"><col width="150">
 		<tr><th>Cinema Location</th><th>Date</th><th>Time</th><th>Available Seat</th><th>Max Capacity</th><th>Booking</th></tr>
 		<% for(ShowtimeDTO showtime : showtimeList) { %>
 			<% CinemaDTO cinema = cinemaList.get(index); %>
@@ -41,8 +41,16 @@
 			<td><%= showtime.getMovieDate() %></td>
 			<td><%= showtime.getMovieTime() %></td>
 			<td><%= cinema.getCapacity()-showtime.getBooked() %></td>
-			<td><%= showtime.getBooked() %></td>
-			<td></td>
+			<td><%= cinema.getCapacity() %></td>
+			<td>
+			<form action="control" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="movieID" value=<%= movie.getMovieID() %>>
+			<input type="hidden" name="showtimeID" value=<%= showtime.getShowtimeID() %>>
+			<input type="hidden" name="action" value="book ticket">
+			<b>Ticket amount : </b><input type="text" name="ticket amount"><br> 
+			<input type="submit" VALUE="Book now!">
+			</form>
+			</td>
 			</tr>
 			<% index++; %>
 		<% } %>

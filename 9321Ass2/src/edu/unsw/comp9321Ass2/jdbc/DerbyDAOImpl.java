@@ -450,6 +450,29 @@ public class DerbyDAOImpl implements CastDAO {
 		return showtimeList;
 	}
 	
+	public ShowtimeDTO findMovieShowtimebyID(int id) throws EmptyResultException {
+		ShowtimeDTO result = null;
+		try{	
+			String query_cast = "SELECT * FROM TBL_MOVIE_SHOWTIMES WHERE MOVIE_SHOWTIME_ID = ?";
+			PreparedStatement stmnt = connection.prepareStatement(query_cast);
+			stmnt.setInt(1, id);
+			ResultSet res = stmnt.executeQuery();
+			res.next();
+			int showtimeID = res.getInt("MOVIE_SHOWTIME_ID");
+			int movieID = id;
+			int cinemaID = res.getInt("CINEMA_ID");
+			java.sql.Date movieDate = res.getDate("MOVIE_DATE");
+			java.sql.Time movieTime = res.getTime("MOVIE_TIME");
+			int booked = res.getInt("BOOKED");
+			result = new ShowtimeDTO(showtimeID, movieID, cinemaID, movieDate, movieTime, booked);
+		}catch(Exception e){
+			System.out.println("Caught Exception");
+			e.printStackTrace();
+			throw new EmptyResultException();
+		}
+		return result;
+	}
+	
 	
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -797,5 +820,59 @@ public class DerbyDAOImpl implements CastDAO {
 			}
 		}
 		return result;
+	}
+	
+	/**
+	 * Setting the booked value in movie showtimes table
+	 * @param showtimeID
+	 * @param amount
+	 */
+	public void setBooked(int showtimeID, int amount) {
+		PreparedStatement stmnt = null; 
+		try{
+			String sqlStr = 
+				"UPDATE TBL_MOVIE_SHOWTIMES SET BOOKED = ? "+
+				"WHERE MOVIE_SHOWTIME_ID = ?";
+			stmnt = connection.prepareStatement(sqlStr);
+			int newAmount = findMovieShowtimebyID(showtimeID).getBooked() + amount;
+			stmnt.setInt(1, newAmount);
+			stmnt.setInt(2, showtimeID);
+			int result = stmnt.executeUpdate();
+			logger.info("Statement successfully executed "+result);
+			logger.info("Database has been changed");
+			stmnt.close();
+		}catch(Exception e){
+			logger.severe("Failed to change database! ");
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Add booking to teh database
+	 * @param showtimeID
+	 * @param userID
+	 * @param amount
+	 * @throws EmptyResultException
+	 */
+	public void addBooking(int showtimeID, int userID, int amount) throws EmptyResultException {
+		PreparedStatement stmnt = null; 
+		int bookingID = lastIndex("TBL_BOOKINGS","BOOKING_ID")+1;
+		try{
+			String sqlStr = 
+				"INSERT INTO TBL_BOOKINGS (BOOKING_ID, USER_ID, MOVIE_SHOWTIME_ID, AMOUNT) "+
+				"VALUES (?,?,?,?)";
+			stmnt = connection.prepareStatement(sqlStr);
+			stmnt.setInt(1,bookingID);
+			stmnt.setInt(2,userID);
+			stmnt.setInt(3,showtimeID);
+			stmnt.setInt(4,amount);
+			int result = stmnt.executeUpdate();
+			logger.info("Statement successfully executed "+result);
+			logger.info("Booking has been registered to the database");
+			stmnt.close();
+		}catch(Exception e){
+			logger.severe("Unable to add Booking! ");
+			e.printStackTrace();
+		}
 	}
 }
