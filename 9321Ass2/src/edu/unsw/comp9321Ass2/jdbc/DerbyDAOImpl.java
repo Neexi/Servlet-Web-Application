@@ -343,17 +343,18 @@ public class DerbyDAOImpl implements CastDAO {
 		return allCinemas;
 	}
 	
-	public void addMovieShowtime(int movieID, int cinemaID, java.sql.Date date) throws ParseException {
+	public void addMovieShowtime(int movieID, int cinemaID, java.sql.Date date, java.sql.Time time) throws ParseException {
 		PreparedStatement stmnt = null;
 		try{
 			String sqlStr = 
-				"INSERT INTO TBL_MOVIE_SHOWTIMES (MOVIE_SHOWTIME_ID, MOVIE_ID, CINEMA_ID, MOVIE_DATE) "+
-				"VALUES (?,?,?,?)";
+				"INSERT INTO TBL_MOVIE_SHOWTIMES (MOVIE_SHOWTIME_ID, MOVIE_ID, CINEMA_ID, MOVIE_DATE, MOVIE_TIME) "+
+				"VALUES (?,?,?,?,?)";
 			stmnt = connection.prepareStatement(sqlStr);
 			stmnt.setInt(1,lastIndex("TBL_MOVIE_SHOWTIMES","MOVIE_SHOWTIME_ID")+1);
 			stmnt.setInt(2, movieID);
 			stmnt.setInt(3, cinemaID);
 			stmnt.setDate(4, date);
+			stmnt.setTime(5, time);
 			int result = stmnt.executeUpdate();
 			logger.info("Statement successfully executed "+result);
 			logger.info("Movie Showtime has been registered to the database");
@@ -364,15 +365,16 @@ public class DerbyDAOImpl implements CastDAO {
 		}
 	}
 	
-	public boolean availableMovieShowtime(int cinemaID, java.sql.Date date) throws ParseException {
+	public boolean availableMovieShowtime(int cinemaID, java.sql.Date date, java.sql.Time time) throws ParseException {
 		boolean available = true;
 		PreparedStatement stmnt = null;
 		try{
 			String sqlStr = 
-				"SELECT COUNT(*) FROM TBL_MOVIE_SHOWTIMES WHERE CINEMA_ID = ? AND MOVIE_DATE = ?";
+				"SELECT COUNT(*) FROM TBL_MOVIE_SHOWTIMES WHERE CINEMA_ID = ? AND MOVIE_DATE = ? AND MOVIE_TIME = ?";
 			stmnt = connection.prepareStatement(sqlStr);
 			stmnt.setInt(1, cinemaID);
 			stmnt.setDate(2, date);
+			stmnt.setTime(3, time);
 			ResultSet count_res = stmnt.executeQuery();
 			count_res.next();
 			if(count_res.getInt(1) > 0) {

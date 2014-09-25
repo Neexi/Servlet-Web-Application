@@ -31,9 +31,9 @@ public interface CastDAO {
 	
 	public List<CinemaDTO> findAllCinema();
 	
-	public void addMovieShowtime(int movieID, int cinemaID, java.sql.Date date) throws ParseException ;
+	public void addMovieShowtime(int movieID, int cinemaID, java.sql.Date date, java.sql.Time time) throws ParseException ;
 	
-	public boolean availableMovieShowtime(int cinemaID, java.sql.Date date) throws ParseException;
+	public boolean availableMovieShowtime(int cinemaID, java.sql.Date date, java.sql.Time time) throws ParseException;
 	
 	public void addMovie(MovieDTO movie);
 	
