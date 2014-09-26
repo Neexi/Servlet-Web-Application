@@ -753,12 +753,11 @@ public class DerbyDAOImpl implements CastDAO {
 	
 	public List<MovieDTO> getNowShowing(int noResults, String path){
 		List<MovieDTO> movies = new ArrayList<MovieDTO>();
-		System.out.println("infunction");
 		try{
 			Statement stmnt = connection.createStatement();
-			ResultSet results = stmnt.executeQuery("SELECT * FROM TBL_MOVIES WHERE RELEASE_DATE <= current_date");
-			System.out.println("infunction2");
+			ResultSet results = stmnt.executeQuery("SELECT * FROM TBL_MOVIES WHERE RELEASE_DATE <= current_date ORDER BY RELEASE_DATE ASC");
 			while(results.next()){
+				System.out.println("got a movie");
 				int movieID = results.getInt("MOVIE_ID");
 				String movieName = results.getString("MOVIE_NAME");
 				Blob blob = results.getBlob("POSTER");
@@ -782,7 +781,12 @@ public class DerbyDAOImpl implements CastDAO {
 			System.out.println(e.getMessage());
 			logger.severe("Failed to get moveies "+e.getStackTrace());
 		}
-		//movies = movies.subList(1, noResults-1);
+		System.out.println(movies.size());
+		System.out.println(noResults);
+		if(movies.size() > noResults){	
+			System.out.println("sublisting");
+			movies = movies.subList(1, noResults+1);
+		}
 		return movies;
 		
 	}

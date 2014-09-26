@@ -74,7 +74,7 @@ if (message != null && !message.equals("")) {%>
 			<img src="${pageContext.request.contextPath}/tmpImages/${movie.movieID}.jpg" alt="poster" height="42" width="42">
 		</td>
 		<td>
-			${movie.movieName}
+			<a href="${pageContext.request.contextPath}/control?action=movie+detail&movieID=${movie.movieID}">${movie.movieName}</a>
 		</td>
 	</tr>
 	</table>			

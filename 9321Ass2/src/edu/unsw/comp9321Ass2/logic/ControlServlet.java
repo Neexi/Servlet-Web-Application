@@ -49,6 +49,7 @@ public class ControlServlet extends HttpServlet {
 	
 	public void init() throws ServletException{
 		super.init();
+		this.servletFilePath = getServletContext().getRealPath("/");
     	HashMap<String, Command> commands = new HashMap<String, Command>();
     	commands.put("home",new HomeCommand(servletFilePath));
     	commands.put("login",new LoginCommand());
@@ -75,7 +76,6 @@ public class ControlServlet extends HttpServlet {
     	commands.put("book ticket", new BookTicketCommand());
     	commands.put("checkout", new CheckoutCommand());
     	this.commands = commands;
-    	this.servletFilePath = getServletContext().getRealPath("/");
     	System.out.println(this.servletFilePath);
     }
        

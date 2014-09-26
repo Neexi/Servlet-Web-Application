@@ -10,7 +10,7 @@
 <div align="center">
 <h1>Please log in to your account to access this function</h1><br>
 <form action="control" method="get">
-	<input type="hidden" name="action" value="return">
+	<input type="hidden" name="action" value="home">
 	<input type="submit" VALUE="Return to Home Page">
 </form>
 </div>
