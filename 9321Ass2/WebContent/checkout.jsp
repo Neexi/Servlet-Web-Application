@@ -20,12 +20,20 @@
 </form>
 </div>
 <div align="center">
+<h1>Checkout</h1>
+<h4>Please enter your credit card details in order to checkout.</h4>
 <form action="control" method="post">
 	<input type="hidden" name="action" value="checkout">
 	<input type="hidden" name="showtimeID" value="<%= request.getAttribute("showtimeID") %>">
 	<input type="hidden" name="amount" value="<%= request.getAttribute("amount") %>">
 	<input type="hidden" name="userID" value="<%= request.getAttribute("userID") %>">
-	<input type="submit" VALUE="Checkout">
+	Name on card:
+	<input type="text" name="cardName"><br>
+	Credit card number:
+	<input type="text" name="cardNo"><br>
+	CSC(Card Security Code):
+	<input type="text" name="cardCSC"><br>
+	<input type="submit" VALUE="Check Out">
 </form>
 </div>
 </body>
