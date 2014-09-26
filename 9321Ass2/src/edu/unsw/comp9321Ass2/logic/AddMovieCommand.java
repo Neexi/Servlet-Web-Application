@@ -56,9 +56,8 @@ public class AddMovieCommand implements Command {
 			 MovieDTO newMovie = new MovieDTO(cast.lastMovie()+1, title, date, null, genres,
 		        		director,synopsis,actors,age_rating);
 		     cast.addMovie(newMovie);
-			 //System.out.println("Filepart not found");
 		 }
-		 forwardPage = "home.jsp";
+		 forwardPage = "success.jsp";
 		 return forwardPage;
 	}
 	
