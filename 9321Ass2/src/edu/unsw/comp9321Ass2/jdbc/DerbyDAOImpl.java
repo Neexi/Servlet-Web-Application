@@ -14,6 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -665,7 +666,8 @@ public class DerbyDAOImpl implements CastDAO {
 			stmnt.setString(2, review_paragraph);
 			stmnt.setInt(3, movieID);
 			stmnt.setInt(4, review_rating);
-			stmnt.setString(5, fmt.format(new Date()));
+			java.sql.Date timeNow = new java.sql.Date(Calendar.getInstance().getTimeInMillis());
+			stmnt.setDate(5, timeNow);
 			stmnt.setString(6, review_name);
 			int result = stmnt.executeUpdate();
 			logger.info("Statement successfully executed "+result);
@@ -757,13 +759,12 @@ public class DerbyDAOImpl implements CastDAO {
 			Statement stmnt = connection.createStatement();
 			ResultSet results = stmnt.executeQuery("SELECT * FROM TBL_MOVIES WHERE RELEASE_DATE <= current_date ORDER BY RELEASE_DATE ASC");
 			while(results.next()){
-				System.out.println("got a movie");
+				//System.out.println("got a movie");
 				int movieID = results.getInt("MOVIE_ID");
 				String movieName = results.getString("MOVIE_NAME");
 				Blob blob = results.getBlob("POSTER");
 				InputStream poster = blob.getBinaryStream();
 				String filePath = path + "tmpImages/" + movieID + ".jpg";
-				//System.out.println(filePath);
 				OutputStream outputStream = new FileOutputStream(filePath);
 				int bytesRead = -1;
                 byte[] buffer = new byte[4096];
@@ -771,7 +772,6 @@ public class DerbyDAOImpl implements CastDAO {
                     outputStream.write(buffer, 0, bytesRead);
                 }
                 outputStream.close();
-                //System.out.println(movieID);
 				movies.add(new MovieDTO(movieID, movieName, null, poster, null,
 		        		null,null,null,1));
 			}
@@ -781,10 +781,9 @@ public class DerbyDAOImpl implements CastDAO {
 			System.out.println(e.getMessage());
 			logger.severe("Failed to get moveies "+e.getStackTrace());
 		}
-		System.out.println(movies.size());
-		System.out.println(noResults);
+		//System.out.println(movies.size());
+		//System.out.println(noResults);
 		if(movies.size() > noResults){	
-			System.out.println("sublisting");
 			movies = movies.subList(1, noResults+1);
 		}
 		return movies;

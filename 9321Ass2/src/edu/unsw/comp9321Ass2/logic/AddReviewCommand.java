@@ -21,6 +21,7 @@ public class AddReviewCommand implements Command {
 				review_name = (String)request.getSession().getAttribute("userSess");
 			}
 			cast.addReview(movieID, review_paragraph, review_rating, review_name);
+			System.out.println("review added");
 			forwardPage = "redirect1.html";
 		} else {
 			forwardPage = "reject1.jsp";
