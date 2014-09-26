@@ -22,7 +22,7 @@ public class HomeCommand implements Command {
 			throws IllegalStateException, IOException, ServletException,
 			EmptyResultException {
 		String forwardPage = "home.jsp";
-		request.setAttribute("nowShowing", cast.getNowShowing(3,filePath));
+		request.setAttribute("nowShowing", cast.getNowShowing(10,filePath));
 		return forwardPage;
 	}
 

@@ -26,7 +26,15 @@
                 </tr>
                 <tr>
                     <td>Genre(s): </td>
-                    <td><input type="text" name="genres" size="50"/></td>
+                    <td>
+	                    <input type="checkbox" name="genres" value="Romance">Romance
+	                    <input type="checkbox" name="genres" value="Horror">Horror
+	                    <input type="checkbox" name="genres" value="Thriller">Thriller
+	                    <input type="checkbox" name="genres" value="Comedy">Comedy
+	                    <input type="checkbox" name="genres" value="Drama">Drama
+	                    <input type="checkbox" name="genres" value="Biopic">Biopic
+	                    <input type="checkbox" name="genres" value="Action">Action
+                    </td>
                 </tr>
                 <tr>
                     <td>Director: </td>

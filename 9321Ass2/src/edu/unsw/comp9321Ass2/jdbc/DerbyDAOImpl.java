@@ -781,7 +781,7 @@ public class DerbyDAOImpl implements CastDAO {
 			System.out.println(e.getMessage());
 			logger.severe("Failed to get moveies "+e.getStackTrace());
 		}
-		//System.out.println(movies.size());
+		System.out.println(movies.size());
 		//System.out.println(noResults);
 		if(movies.size() > noResults){	
 			movies = movies.subList(1, noResults+1);

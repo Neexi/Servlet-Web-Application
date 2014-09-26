@@ -26,7 +26,9 @@ public class AddMovieCommand implements Command {
 		InputStream inputStream = null;
 		String title = request.getParameter("title");
 		String actors = request.getParameter("actors");
-		String genres = request.getParameter("genres");
+		String genresList[]= request.getParameterValues("genres");
+		String genres = convertList(genresList);
+		System.out.println(genres);
 		String director = request.getParameter("director");
 		String synopsis = request.getParameter("synopsis");
 		int age_rating = Integer.parseInt(request.getParameter("age_rating"));
@@ -58,6 +60,18 @@ public class AddMovieCommand implements Command {
 		 }
 		 forwardPage = "home.jsp";
 		 return forwardPage;
+	}
+	
+	private String convertList(String[] list){
+		String listAsStr = "";
+		for(String s:list){
+			listAsStr = listAsStr + "," + s;
+		}
+		//Remove leading comma
+		if(listAsStr.length() > 0){
+			listAsStr = listAsStr.substring(1);
+		}
+		return listAsStr;
 	}
 
 }
