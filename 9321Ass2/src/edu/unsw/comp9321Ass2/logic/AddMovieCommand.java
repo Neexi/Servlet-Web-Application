@@ -42,19 +42,19 @@ public class AddMovieCommand implements Command {
 		Part filePart = request.getPart("poster");
 		if (filePart != null) {
 	        // prints out some information for debugging
-	        System.out.println(filePart.getName());
+	        /*System.out.println(filePart.getName());
 	        System.out.println(filePart.getSize());
-	        System.out.println(filePart.getContentType());
+	        System.out.println(filePart.getContentType());*/
 	        // obtains input stream of the upload file
 	        inputStream = filePart.getInputStream();
 	        //Dummy variables for now, just want to test inserting one image.
 	        MovieDTO newMovie = new MovieDTO(cast.lastMovie()+1, title, date, inputStream, genres,
-	        		director,synopsis,actors,age_rating);
+	        		director,synopsis,actors,age_rating,null);
 	        cast.addMovie(newMovie);
 	        System.out.println("Added movie");
 		 } else{
 			 MovieDTO newMovie = new MovieDTO(cast.lastMovie()+1, title, date, null, genres,
-		        		director,synopsis,actors,age_rating);
+		        		director,synopsis,actors,age_rating,null);
 		     cast.addMovie(newMovie);
 		 }
 		 forwardPage = "success.jsp";

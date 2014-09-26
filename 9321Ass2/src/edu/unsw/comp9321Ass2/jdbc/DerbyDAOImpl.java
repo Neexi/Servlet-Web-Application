@@ -15,6 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -772,8 +774,49 @@ public class DerbyDAOImpl implements CastDAO {
                     outputStream.write(buffer, 0, bytesRead);
                 }
                 outputStream.close();
+                float rating = getMovieRating(movieID);
 				movies.add(new MovieDTO(movieID, movieName, null, poster, null,
-		        		null,null,null,1));
+		        		null,null,null,1,rating));
+			}
+			results.close();
+			stmnt.close();
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+			logger.severe("Failed to get moveies "+e.getStackTrace());
+		}
+		System.out.println(movies.size());
+		//System.out.println(noResults);
+		if(movies.size() > noResults){	
+			movies = movies.subList(1, noResults+1);
+		}
+		Collections.sort(movies,new Comparator<MovieDTO>() {
+	        public int compare(MovieDTO o1, MovieDTO o2) {
+	            return (int) (o2.getRating() - o1.getRating());
+	        }
+	    });
+		return movies;
+	}
+	
+	public List<MovieDTO> getComingSoon(int noResults, String path){
+		List<MovieDTO> movies = new ArrayList<MovieDTO>();
+		try{
+			Statement stmnt = connection.createStatement();
+			ResultSet results = stmnt.executeQuery("SELECT * FROM TBL_MOVIES WHERE RELEASE_DATE > current_date ORDER BY RELEASE_DATE ASC");
+			while(results.next()){
+				int movieID = results.getInt("MOVIE_ID");
+				String movieName = results.getString("MOVIE_NAME");
+				Blob blob = results.getBlob("POSTER");
+				InputStream poster = blob.getBinaryStream();
+				String filePath = path + "tmpImages/" + movieID + ".jpg";
+				OutputStream outputStream = new FileOutputStream(filePath);
+				int bytesRead = -1;
+                byte[] buffer = new byte[4096];
+                while ((bytesRead = poster.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+                outputStream.close();
+				movies.add(new MovieDTO(movieID, movieName, null, poster, null,
+		        		null,null,null,1,0.0f));
 			}
 			results.close();
 			stmnt.close();
@@ -787,7 +830,6 @@ public class DerbyDAOImpl implements CastDAO {
 			movies = movies.subList(1, noResults+1);
 		}
 		return movies;
-		
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

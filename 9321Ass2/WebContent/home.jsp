@@ -66,8 +66,24 @@ if (message != null && !message.equals("")) {%>
 </form>
 
 <h3>Now Showing</h3>
-
 <c:forEach items="${nowShowing}" var="movie">
+	<table>
+	<tr>
+		<td>
+			<img src="${pageContext.request.contextPath}/tmpImages/${movie.movieID}.jpg" alt="poster" height="42" width="42">
+		</td>
+		<td>
+			<a href="${pageContext.request.contextPath}/control?action=movie+detail&movieID=${movie.movieID}">${movie.movieName}</a>
+		</td>
+		<td>
+			Rating: ${movie.rating}
+		</td>
+	</tr>
+	</table>			
+</c:forEach>
+
+<h3>Coming Soon</h3>
+<c:forEach items="${comingSoon}" var="movie">
 	<table>
 	<tr>
 		<td>
@@ -80,6 +96,5 @@ if (message != null && !message.equals("")) {%>
 	</table>			
 </c:forEach>
 
-<h3>Coming Soon</h3>
 </body>
 </html>

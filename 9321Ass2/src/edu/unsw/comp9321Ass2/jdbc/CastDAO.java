@@ -51,6 +51,8 @@ public interface CastDAO {
 	
 	public List<MovieDTO> getNowShowing(int noResults,String path);
 	
+	public List<MovieDTO> getComingSoon(int noResults, String path);
+	
 	public List<MovieDTO> searchMovieTitle(String search) throws EmptyResultException;
 	
 	public List<MovieDTO> searchMovieGenre(String search) throws EmptyResultException;

@@ -23,6 +23,7 @@ public class HomeCommand implements Command {
 			EmptyResultException {
 		String forwardPage = "home.jsp";
 		request.setAttribute("nowShowing", cast.getNowShowing(10,filePath));
+		request.setAttribute("comingSoon", cast.getComingSoon(10,filePath));
 		return forwardPage;
 	}
 

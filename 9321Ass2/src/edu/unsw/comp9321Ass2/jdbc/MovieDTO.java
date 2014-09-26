@@ -19,12 +19,13 @@ public class MovieDTO {
 	private String synopsis;
 	private String actors; //Is it better to represent as separate dto? //Answer: Nah, unless we really need additional information for the main actor
 	private int ageRating;
+	private Float rating;
 	
 	/*
 	 * MovieType(Out now/not out) is not taken because it can be generated from release date.
 	 */
 	public MovieDTO(int movieID, String movieName, java.sql.Date releaseDate, InputStream poster, String genre,
-					String director,String synopsis,String actors,int ageRating) {
+					String director,String synopsis,String actors,int ageRating,Float rating) {
 		this.movieID = movieID;
 		this.movieName = movieName;
 		this.releaseDate = releaseDate;
@@ -34,6 +35,7 @@ public class MovieDTO {
 		this.synopsis = synopsis;
 		this.actors = actors;
 		this.ageRating = ageRating;
+		this.rating = rating;
 	}
 	
 	/**
@@ -137,6 +139,9 @@ public class MovieDTO {
 		this.ageRating = ageRating;
 	}
 	
+	public float getRating(){
+		return rating;
+	}
 }
 	
 
