@@ -62,6 +62,8 @@ public interface CastDAO {
 	public float getMovieRating(int movieID);
 	
 	public void setBooked(int showtimeID, int amount);
+		
+	public void addBooking(int showtimeID, int userID, int amount,String cardName,String cardNum,int cardCSC) throws EmptyResultException;
 	
-	public void addBooking(int showtimeID, int userID, int amount) throws EmptyResultException;
+	public List<BookingDTO> getBookings (int userID);
 }

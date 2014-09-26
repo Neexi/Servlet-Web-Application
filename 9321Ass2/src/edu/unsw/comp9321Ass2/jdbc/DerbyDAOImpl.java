@@ -893,24 +893,27 @@ public class DerbyDAOImpl implements CastDAO {
 	}
 	
 	/**
-	 * Add booking to teh database
+	 * Add booking to the database
 	 * @param showtimeID
 	 * @param userID
 	 * @param amount
 	 * @throws EmptyResultException
 	 */
-	public void addBooking(int showtimeID, int userID, int amount) throws EmptyResultException {
+	public void addBooking(int showtimeID, int userID, int amount,String cardName,String cardNum,int cardCSC) throws EmptyResultException {
 		PreparedStatement stmnt = null; 
 		int bookingID = lastIndex("TBL_BOOKINGS","BOOKING_ID")+1;
 		try{
 			String sqlStr = 
-				"INSERT INTO TBL_BOOKINGS (BOOKING_ID, USER_ID, MOVIE_SHOWTIME_ID, AMOUNT) "+
-				"VALUES (?,?,?,?)";
+				"INSERT INTO TBL_BOOKINGS (BOOKING_ID, USER_ID, MOVIE_SHOWTIME_ID, AMOUNT,CARD_NAME,CARD_NUMBER,CARD_CSC) "+
+				"VALUES (?,?,?,?,?,?,?)";
 			stmnt = connection.prepareStatement(sqlStr);
 			stmnt.setInt(1,bookingID);
 			stmnt.setInt(2,userID);
 			stmnt.setInt(3,showtimeID);
 			stmnt.setInt(4,amount);
+			stmnt.setString(5,cardName);
+			stmnt.setString(6,cardNum);
+			stmnt.setInt(7,cardCSC);
 			int result = stmnt.executeUpdate();
 			logger.info("Statement successfully executed "+result);
 			logger.info("Booking has been registered to the database");
@@ -919,5 +922,36 @@ public class DerbyDAOImpl implements CastDAO {
 			logger.severe("Unable to add Booking! ");
 			e.printStackTrace();
 		}
+	}
+
+	public List<BookingDTO> getBookings(int userID) {
+		List<BookingDTO> bookings = new ArrayList<BookingDTO>();
+		try{
+			String query_cast = "select * from TBL_BOOKINGS t1,TBL_MOVIE_SHOWTIMES t2,TBL_MOVIES t3 "
+					+ "where t1.USER_ID = ? and t1.MOVIE_SHOWTIME_ID = t2.MOVIE_SHOWTIME_ID and t2.MOVIE_ID = t3.MOVIE_ID";
+			PreparedStatement stmnt = connection.prepareStatement(query_cast);
+			stmnt.setInt(1, userID);
+			ResultSet results = stmnt.executeQuery();
+			DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+			
+			while(results.next()){
+				int amount = results.getInt("AMOUNT");
+				String date = df.format(results.getDate("MOVIE_DATE"));  
+				String movieName = results.getString("MOVIE_NAME");
+				String movieTime = results.getTime("MOVIE_TIME").toString();
+				String cardName = results.getString("CARD_NAME");
+				String cardNum = results.getString("CARD_NUMBER");
+				int cardCSC = results.getInt("CARD_CSC");
+
+				bookings.add(new BookingDTO(movieName,movieTime,date,amount,cardName,cardNum,cardCSC));
+			}
+			results.close();
+			stmnt.close();
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+			logger.severe("Failed to get bookings "+e.getStackTrace());
+		}
+		
+		return bookings;
 	}
 }

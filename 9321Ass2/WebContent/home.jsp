@@ -38,6 +38,10 @@ if (message != null && !message.equals("")) {%>
 	<input type="hidden" name="action" value="edit profile">
 	<input type="submit" VALUE="Edit Profile">
 </form>
+<form action="control" method="get">
+	<input type="hidden" name="action" value="view bookings">
+	<input type="submit" VALUE="View bookings">
+</form>
 <% if(cast.checkAdmin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))) {%>
 <form action="control" method="get">
 	<input type="hidden" name="action" value="admin">
