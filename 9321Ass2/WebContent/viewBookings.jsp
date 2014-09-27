@@ -13,6 +13,7 @@
 <table border = "1">
 	<tr>
 		<th>Movie name</th>
+		<th>Cinema location</th>
 		<th>Movie show time</th>
 		<th>Movie date</th>
 		<th>Bookings made</th>
@@ -24,6 +25,9 @@
 	<tr>
 		<td>
 			${booking.movieName}
+		</td>
+		<td>
+			${booking.location}
 		</td>
 		<td>
 			${booking.showTime}

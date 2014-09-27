@@ -950,8 +950,9 @@ public class DerbyDAOImpl implements CastDAO {
 	public List<BookingDTO> getBookings(int userID) {
 		List<BookingDTO> bookings = new ArrayList<BookingDTO>();
 		try{
-			String query_cast = "select * from TBL_BOOKINGS t1,TBL_MOVIE_SHOWTIMES t2,TBL_MOVIES t3 "
-					+ "where t1.USER_ID = ? and t1.MOVIE_SHOWTIME_ID = t2.MOVIE_SHOWTIME_ID and t2.MOVIE_ID = t3.MOVIE_ID";
+			String query_cast = "select * from TBL_BOOKINGS t1,TBL_MOVIE_SHOWTIMES t2,TBL_MOVIES t3,TBL_CINEMAS t4 "
+					+ "where t1.USER_ID = ? and t1.MOVIE_SHOWTIME_ID = t2.MOVIE_SHOWTIME_ID and t2.MOVIE_ID = t3.MOVIE_ID "
+					+ "and t2.CINEMA_ID = t4.CINEMA_ID";
 			PreparedStatement stmnt = connection.prepareStatement(query_cast);
 			stmnt.setInt(1, userID);
 			ResultSet results = stmnt.executeQuery();
@@ -965,8 +966,8 @@ public class DerbyDAOImpl implements CastDAO {
 				String cardName = results.getString("CARD_NAME");
 				String cardNum = results.getString("CARD_NUMBER");
 				int cardCSC = results.getInt("CARD_CSC");
-
-				bookings.add(new BookingDTO(movieName,movieTime,date,amount,cardName,cardNum,cardCSC));
+				String location = results.getString("CINEMA_LOCATION");
+				bookings.add(new BookingDTO(movieName,movieTime,date,amount,cardName,cardNum,cardCSC,location));
 			}
 			results.close();
 			stmnt.close();

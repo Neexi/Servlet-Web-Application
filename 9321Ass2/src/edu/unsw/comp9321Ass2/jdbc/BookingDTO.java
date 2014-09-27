@@ -17,8 +17,9 @@ public class BookingDTO {
 	private String cardName;
 	private String cardNum;
 	private int cardCSC;
+	private String location;
 	
-	public BookingDTO(String movieName,String showTime,String showDate,int amount,String cardName,String cardNum,int cardCSC){
+	public BookingDTO(String movieName,String showTime,String showDate,int amount,String cardName,String cardNum,int cardCSC,String location){
 		this.movieName = movieName;
 		this.showTime = showTime;
 		this.showDate = showDate;
@@ -26,6 +27,7 @@ public class BookingDTO {
 		this.cardName = cardName;
 		this.cardNum = cardNum;
 		this.cardCSC = cardCSC;
+		this.location = location;
 	}
 	
 	public String getMovieName(){
@@ -48,5 +50,8 @@ public class BookingDTO {
 	}
 	public int getCardCSC(){
 		return cardCSC;
+	}
+	public String getLocation(){
+		return location;
 	}
 }
