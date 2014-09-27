@@ -45,11 +45,13 @@ public class AddMovieCommand implements Command {
 		int releaseYear = Integer.parseInt(getIntParam(request,"release_year")) - 1901; //offset because java.
 		@SuppressWarnings("deprecation")
 		java.sql.Date date = new java.sql.Date(releaseYear,releaseMmonth,releaseDate);
-		
+		System.out.println("error"+error);
 		//Dealing with adding a movie with a poster or no poster
 		if(!error){
+			System.out.println("No error detected.");
 			Part filePart = request.getPart("poster");
 			if (filePart != null) {
+				System.out.println("Adding movie with poster");
 		        inputStream = filePart.getInputStream();
 		        MovieDTO newMovie = new MovieDTO(cast.lastMovie()+1, title, date, inputStream, genres,
 		        		director,synopsis,actors,age_rating,null);
@@ -73,8 +75,8 @@ public class AddMovieCommand implements Command {
 		if(output == null || output.equals("")){
 			output = "-1";
 			request.getSession().setAttribute("message", "Error: Missing fields.");
+			error = true;
 		}
-		error = true;
 		return output;
 	}
 	
@@ -84,8 +86,8 @@ public class AddMovieCommand implements Command {
 		if(output == null || output.equals("") || !output.matches("^\\d*$")){
 			output = "-1";
 			request.getSession().setAttribute("message", "Error: Missing fields or date field is not correct");
+			error = true;
 		}
-		error = true;
 		return output;
 	}
 	
