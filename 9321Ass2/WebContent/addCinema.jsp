@@ -30,5 +30,11 @@
 	<input type="checkbox" name="amenity" value="Restaurant">Restaurant<br>
 	<input type="submit" VALUE="add">
 </form>
+<div align="right">
+<form action="control" method="get">
+	<input type="hidden" name="action" value="return">
+	<input type="submit" VALUE="Return to Home Page">
+</form>
+</div>
 </body>
 </html>

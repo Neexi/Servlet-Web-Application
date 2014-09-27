@@ -26,11 +26,14 @@ public class CheckoutCommand implements Command {
 				int userID = cast.findUser((String)request.getSession().getAttribute("userSess")).getID();
 				cast.setBooked(showtimeID, amount);
 				cast.addBooking(showtimeID, userID, amount,cardName,cardNum,cardCSC);
-				request.getSession().setAttribute("message", "Booking finished");
-				forwardPage = "home.jsp";
+				request.getSession().setAttribute("message", "Booking completed. You can view your bookings via the home page.");
+				forwardPage = "success.jsp";
 			} else {
-				
-				request.getSession().setAttribute("message", "Problem occured in booking:"+ checkParams(request));
+				if(checkParams(request).matches("Success")){
+					request.getSession().setAttribute("message", "Problem occured in booking: bookings are sold out.");
+				}else{
+					request.getSession().setAttribute("message", "Problem occured in booking:"+ checkParams(request));
+				}
 				forwardPage = "home.jsp";
 			}
 		} else {

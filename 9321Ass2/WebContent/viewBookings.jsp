@@ -46,5 +46,11 @@
 	</tr>				
 </c:forEach>
 </table>
+<div align="right">
+<form action="control" method="get">
+	<input type="hidden" name="action" value="return">
+	<input type="submit" VALUE="Return to Home Page">
+</form>
+</div>
 </body>
 </html>
