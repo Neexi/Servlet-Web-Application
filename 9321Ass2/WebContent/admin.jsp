@@ -14,10 +14,17 @@
 <body>
 <div align="center">
 <h1>Administrator Page</h1><br>
+
 <form action="control" method="get">
 	<input type="hidden" name="action" value="add cinema">
 	<input type="submit" VALUE="Add new Cinema">
 </form>
+
+<form action="control" method="get">
+<input type="hidden" name="action" value="newMovie">
+<input type="submit" VALUE="New movie">
+</form>
+
 </div>
 <div align="right">
 <form action="control" method="get">

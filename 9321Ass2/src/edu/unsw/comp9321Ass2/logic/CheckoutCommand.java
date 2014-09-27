@@ -36,7 +36,7 @@ public class CheckoutCommand implements Command {
 		} else {
 			forwardPage = "reject1.jsp";
 		}
-		return forwardPage;
+		return forwardPage+"runPRG";
 	}
 	
 	private String checkParams(HttpServletRequest request){
@@ -58,6 +58,8 @@ public class CheckoutCommand implements Command {
 			output = "Please enter a valid card csc.";
 		}else if(cardName.length() > 200){
 			output = "Card name is too long.";
+		}else if(!cardName.matches("(\\w|\\s|')*")){
+			output = "Please enter a card name without invalid characters such as <, >,\\,etc.";
 		}
 		return output;
 	}

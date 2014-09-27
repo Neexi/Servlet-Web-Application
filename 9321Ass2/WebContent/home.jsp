@@ -63,12 +63,6 @@ if (message != null && !message.equals("")) {%>
 </div>
 <% } %>
 
-
-<form action="control" method="get">
-<input type="hidden" name="action" value="newMovie">
-<input type="submit" VALUE="New movie">
-</form>
-
 <h3>Now Showing</h3>
 <c:forEach items="${nowShowing}" var="movie">
 	<table>
