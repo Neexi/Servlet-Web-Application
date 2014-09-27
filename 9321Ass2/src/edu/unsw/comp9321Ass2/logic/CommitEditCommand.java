@@ -19,7 +19,7 @@ public class CommitEditCommand implements Command {
 			String email = request.getParameter("email");
 			String firstName = request.getParameter("firstName");
 			String lastName = request.getParameter("lastName");
-			String notLegit = legitimateEditProfile(email);
+			String notLegit = legitimateEditProfile(email,firstName,lastName);
 			request.setAttribute("username", username);
 			request.setAttribute("email", email);
 			request.setAttribute("firstName", firstName);
@@ -38,10 +38,27 @@ public class CommitEditCommand implements Command {
 		return forwardPage;
 	}
 	
-	private String legitimateEditProfile(String email) throws EmptyResultException {
+	private String legitimateEditProfile(String email,String firstName,String lastName) throws EmptyResultException {
 		String notLegit = "";
-		//TODO : More proper parameter check
+		if(email == null) {
+			notLegit = "Email can't be empty";
+		}else if(!isValidEmailAddress(email)){
+			notLegit = "Invalid email address";
+		}else if(!firstName.matches("^\\w*$")){
+			notLegit = "Invalid first name";
+		}else if(!lastName.matches("^\\w*$")){
+			notLegit = "Invalid last name";
+		}
 		return notLegit;
 	}
+	
+	//Code taken from stackoverflow.
+		//http://stackoverflow.com/questions/624581/what-is-the-best-java-email-address-validation-method
+		public boolean isValidEmailAddress(String email) {
+	        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+	        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+	        java.util.regex.Matcher m = p.matcher(email);
+	        return m.matches();
+		}
 
 }

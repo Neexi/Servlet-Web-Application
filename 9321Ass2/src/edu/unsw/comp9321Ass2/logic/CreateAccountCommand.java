@@ -58,7 +58,7 @@ public class CreateAccountCommand implements Command {
 	 * @throws EmptyResultException
 	 */
 	private String legitimateNewAccount(String username, String password, String email) throws EmptyResultException {
-		String notLegit = "";
+		String notLegit = "";		
 		if(cast.existUser(username)) {
 			notLegit = "Username already exists";
 		} else if(username.length() < 4) {
@@ -71,12 +71,23 @@ public class CreateAccountCommand implements Command {
 			notLegit = "Password is too long";
 		} else if(email == null) {
 			notLegit = "Email can't be empty";
-		} else if(password.length() > 50) {
+		} else if(email.length() > 50) {
 			notLegit = "Email is too long";
 		} else if(!username.matches("^(\\w|\\s|\\d)*$")){
 			notLegit = "Invalid characters in username. Please only use letters and digits.";
+		} else if(!isValidEmailAddress(email)){
+			notLegit = "Invalid email address";
 		}
 		return notLegit;
+	}
+	
+	//Code taken from stackoverflow.
+	//http://stackoverflow.com/questions/624581/what-is-the-best-java-email-address-validation-method
+	public boolean isValidEmailAddress(String email) {
+        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+        java.util.regex.Matcher m = p.matcher(email);
+        return m.matches();
 	}
 	
 	/**
