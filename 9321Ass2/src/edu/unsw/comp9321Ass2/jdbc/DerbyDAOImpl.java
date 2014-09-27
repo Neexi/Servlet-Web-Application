@@ -832,6 +832,29 @@ public class DerbyDAOImpl implements CastDAO {
 		return movies;
 	}
 	
+	public String getMoviePoster(int movieID,String path){
+		try{
+			Statement stmnt = connection.createStatement();
+			ResultSet results = stmnt.executeQuery("SELECT * FROM TBL_MOVIES WHERE MOVIE_ID = ?");
+			while(results.next()){
+				Blob blob = results.getBlob("POSTER");
+				InputStream poster = blob.getBinaryStream();
+				String filePath = path + "tmpImages/" + movieID + ".jpg";
+				OutputStream outputStream = new FileOutputStream(filePath);
+				int bytesRead = -1;
+                byte[] buffer = new byte[4096];
+                while ((bytesRead = poster.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+                outputStream.close();
+			}
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+			logger.severe("Failed to get moveies "+e.getStackTrace());
+		}
+		return movieID+".jpg";
+	}
+	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Search and Comment related stuff
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

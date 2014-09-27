@@ -32,7 +32,8 @@
 	if (message != null && !message.equals("")) {%>
 	<div align="center"><h2><%= message %></h2></div>
 	<% } %>
-	Movie Poster Here<br>
+	<img src="${pageContext.request.contextPath}/tmpImages/${poster}" alt="poster" height="150" width="150">
+	<br>
 	<% if(!movie.getReleaseDate().after(new Date())) { %>
 		<form action="control" method="get">
 		<input type="hidden" name="action" value="check movie showtime">

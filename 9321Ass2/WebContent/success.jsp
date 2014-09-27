@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<form action="control" method="post">
+<form action="control" method="get">
 	<input type="hidden" name="action" value="home">
 	<input type="submit" VALUE="Return to Home Page">
 </form>
