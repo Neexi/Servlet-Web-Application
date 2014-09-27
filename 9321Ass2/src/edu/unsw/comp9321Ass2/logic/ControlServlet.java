@@ -52,7 +52,7 @@ public class ControlServlet extends HttpServlet {
 		this.servletFilePath = getServletContext().getRealPath("/");
     	HashMap<String, Command> commands = new HashMap<String, Command>();
     	commands.put("home",new HomeCommand(servletFilePath));
-    	commands.put("login",new LoginCommand());
+    	commands.put("login",new LoginCommand(servletFilePath));
     	commands.put("logout",new LogoutCommand());
     	commands.put("edit profile",new EditProfileCommand());
     	commands.put("commit edit",new CommitEditCommand());
@@ -159,7 +159,6 @@ public class ControlServlet extends HttpServlet {
 		//Test for post-redirect-get
 		System.out.println("Next is"+next);
 		if(next.matches(".*runPRG$")){
-			System.out.println("WORKS");
 			next = next.replaceAll("runPRG$", "");
 			response.sendRedirect(next);
 		}else{

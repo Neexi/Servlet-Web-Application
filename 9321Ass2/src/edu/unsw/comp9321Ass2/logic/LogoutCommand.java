@@ -22,7 +22,7 @@ public class LogoutCommand implements Command {
 		} else {
 			forwardPage = "reject1.jsp";
 		}
-		forwardPage = "home.jsp";
+		forwardPage = "success.jsp";
 		return forwardPage;
 	}
 
