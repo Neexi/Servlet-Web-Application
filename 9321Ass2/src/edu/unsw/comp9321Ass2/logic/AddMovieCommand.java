@@ -20,15 +20,13 @@ public class AddMovieCommand implements Command {
 	@Override
 	public String execute(HttpServletRequest request,
 			HttpServletResponse response, CastDAO cast) throws IllegalStateException, IOException, ServletException, EmptyResultException {
-		// TODO Auto-generated method stub
-		//logger.info("ADDING A MOVIE");
+		String message = "Successfully added movie";
 		String forwardPage;
 		InputStream inputStream = null;
 		String title = request.getParameter("title");
 		String actors = request.getParameter("actors");
 		String genresList[]= request.getParameterValues("genres");
 		String genres = convertList(genresList);
-		System.out.println(genres);
 		String director = request.getParameter("director");
 		String synopsis = request.getParameter("synopsis");
 		int age_rating = Integer.parseInt(request.getParameter("age_rating"));
@@ -38,26 +36,19 @@ public class AddMovieCommand implements Command {
 		@SuppressWarnings("deprecation")
 		java.sql.Date date = new java.sql.Date(releaseYear,releaseMmonth,releaseDate);
 		
-		//TODO : I change the else to allow me putting movie without poster for now, change it back later if i forget
 		Part filePart = request.getPart("poster");
 		if (filePart != null) {
-	        // prints out some information for debugging
-	        /*System.out.println(filePart.getName());
-	        System.out.println(filePart.getSize());
-	        System.out.println(filePart.getContentType());*/
-	        // obtains input stream of the upload file
 	        inputStream = filePart.getInputStream();
-	        //Dummy variables for now, just want to test inserting one image.
 	        MovieDTO newMovie = new MovieDTO(cast.lastMovie()+1, title, date, inputStream, genres,
 	        		director,synopsis,actors,age_rating,null);
 	        cast.addMovie(newMovie);
-	        System.out.println("Added movie");
 		 } else{
 			 MovieDTO newMovie = new MovieDTO(cast.lastMovie()+1, title, date, null, genres,
 		        		director,synopsis,actors,age_rating,null);
 		     cast.addMovie(newMovie);
 		 }
-		 forwardPage = "success.jsp";
+		request.getSession().setAttribute("message", message);
+		 forwardPage = "success.jsprunPRG";
 		 return forwardPage;
 	}
 	

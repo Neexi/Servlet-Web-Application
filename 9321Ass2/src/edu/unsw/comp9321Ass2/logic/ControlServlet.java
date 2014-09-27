@@ -157,7 +157,7 @@ public class ControlServlet extends HttpServlet {
 		session.setAttribute("cast", cast);
 		session.setAttribute("logged",String.valueOf(cast.checkLogin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))));
 		//Test for post-redirect-get
-		System.out.println("Next is"+next);
+		//System.out.println("Next is"+next);
 		if(next.matches(".*runPRG$")){
 			next = next.replaceAll("runPRG$", "");
 			response.sendRedirect(next);

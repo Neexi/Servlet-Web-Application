@@ -12,6 +12,12 @@
 <title>CF Movie Co</title>
 </head>
 <body>
+<form action="control" method="get">
+	<div align="right">
+	<input type="hidden" name="action" value="return">
+	<input type="submit" VALUE="Return to Home Page">
+	</div>
+</form>
 <% if(request.getAttribute("movie") != null) { %>
 	<% MovieDTO movie = (MovieDTO)request.getAttribute("movie"); %>
 	<% List<String> actors_list = Arrays.asList(movie.getActors().split("\\s*,\\s*")); %>
