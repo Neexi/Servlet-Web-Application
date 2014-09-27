@@ -784,14 +784,19 @@ public class DerbyDAOImpl implements CastDAO {
 			System.out.println(e.getMessage());
 			logger.severe("Failed to get moveies "+e.getStackTrace());
 		}
-		//System.out.println(movies.size());
-		//System.out.println(noResults);
 		if(movies.size() > noResults){	
 			movies = movies.subList(1, noResults+1);
 		}
 		Collections.sort(movies,new Comparator<MovieDTO>() {
 	        public int compare(MovieDTO o1, MovieDTO o2) {
-	            return (int) (o2.getRating() - o1.getRating());
+	        	if(o2.getRating() > o1.getRating()){
+	        		return 1;
+	        	}else if(o2.getRating() == o1.getRating()){
+	        		return 0;
+	        	}else{
+	        		return -1;
+	        	}	
+	            //return (int) (o2.getRating() - o1.getRating());
 	        }
 	    });
 		return movies;
