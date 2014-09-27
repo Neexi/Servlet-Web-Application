@@ -59,7 +59,6 @@ public class CreateAccountCommand implements Command {
 	 */
 	private String legitimateNewAccount(String username, String password, String email) throws EmptyResultException {
 		String notLegit = "";
-		//TODO : More proper parameter check
 		if(cast.existUser(username)) {
 			notLegit = "Username already exists";
 		} else if(username.length() < 4) {
@@ -74,7 +73,9 @@ public class CreateAccountCommand implements Command {
 			notLegit = "Email can't be empty";
 		} else if(password.length() > 50) {
 			notLegit = "Email is too long";
-		} 
+		} else if(!username.matches("^(\\w|\\s|\\d)*$")){
+			notLegit = "Invalid characters in username. Please only use letters and digits.";
+		}
 		return notLegit;
 	}
 	
