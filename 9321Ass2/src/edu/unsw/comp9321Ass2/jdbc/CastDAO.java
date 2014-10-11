@@ -25,7 +25,7 @@ public interface CastDAO {
 	
 	public boolean usedEmail(String email) throws EmptyResultException;
 	
-	public void editUser(String username, String email, String firstName, String lastName);
+	public void editUser(String username, String email, String nickName, String firstName, String lastName);
 	
 	public void addCinema(String location, int capacity, List<String> amenities) throws EmptyResultException;
 	

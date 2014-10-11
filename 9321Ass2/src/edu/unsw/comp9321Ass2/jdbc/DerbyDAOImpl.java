@@ -81,7 +81,7 @@ public class DerbyDAOImpl implements CastDAO {
 			ResultSet res = stmnt.executeQuery();
 			res.next();
 			user = new UserDTO(res.getInt("USER_ID"), res.getString("USER_NAME"), res.getString("USER_PASSWORD"), res.getString("USER_EMAIL"), 
-					res.getString("USER_FIRSTNAME"),res.getString("USER_LASTNAME"), res.getString("USER_STATUS"));
+					res.getString("USER_NICKNAME"),res.getString("USER_FIRSTNAME"),res.getString("USER_LASTNAME"), res.getString("USER_STATUS"));
 		}catch(Exception e){
 			System.out.println("Caught Exception");
 			e.printStackTrace();
@@ -164,16 +164,17 @@ public class DerbyDAOImpl implements CastDAO {
 		
 		try{
 			String sqlStr = 
-				"INSERT INTO TBL_USERS (USER_ID, USER_NAME, USER_PASSWORD, USER_EMAIL, USER_FIRSTNAME, USER_LASTNAME, USER_STATUS) "+
-				"VALUES (?,?,?,?,?,?,?)";
+				"INSERT INTO TBL_USERS (USER_ID, USER_NAME, USER_PASSWORD, USER_EMAIL, USER_NICKNAME, USER_FIRSTNAME, USER_LASTNAME, USER_STATUS) "+
+				"VALUES (?,?,?,?,?,?,?,?)";
 			stmnt = connection.prepareStatement(sqlStr);
 			stmnt.setInt(1,user.getID());
 			stmnt.setString(2, user.getUsername());
 			stmnt.setString(3, user.getPassword());
 			stmnt.setString(4, user.getEmail());
-			stmnt.setString(5, user.getFirstName());
-			stmnt.setString(6, user.getLastName());
-			stmnt.setString(7, user.getStatus());
+			stmnt.setString(5, user.getNickName());
+			stmnt.setString(6, user.getFirstName());
+			stmnt.setString(7, user.getLastName());
+			stmnt.setString(8, user.getStatus());
 			int result = stmnt.executeUpdate();
 			logger.info("Statement successfully executed "+result);
 			logger.info(user.getUsername()+" has been registered to the database");
@@ -255,17 +256,18 @@ public class DerbyDAOImpl implements CastDAO {
 		return used;
 	}
 	
-	public void editUser(String username, String email, String firstName, String lastName) {
+	public void editUser(String username, String email, String nickName, String firstName, String lastName) {
 		PreparedStatement stmnt = null; 
 		try{
 			String sqlStr = 
-				"UPDATE TBL_USERS SET USER_EMAIL = ?, USER_FIRSTNAME = ?, USER_LASTNAME = ? "+
+				"UPDATE TBL_USERS SET USER_EMAIL = ?, USER_NICKNAME = ?, USER_FIRSTNAME = ?, USER_LASTNAME = ? "+
 				"WHERE USER_NAME = ?";
 			stmnt = connection.prepareStatement(sqlStr);
 			stmnt.setString(1, email);
-			stmnt.setString(2, firstName);
-			stmnt.setString(3, lastName);
-			stmnt.setString(4, username);
+			stmnt.setString(2, nickName);
+			stmnt.setString(3, firstName);
+			stmnt.setString(4, lastName);
+			stmnt.setString(5, username);
 			int result = stmnt.executeUpdate();
 			logger.info("Statement successfully executed "+result);
 			logger.info(username+" profile has been changed");

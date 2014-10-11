@@ -19,6 +19,7 @@ public class EditProfileCommand implements Command {
 			UserDTO user = cast.findUser((String)session.getAttribute("userSess"));
 			request.setAttribute("username", user.getUsername());
 			request.setAttribute("email", user.getEmail());
+			request.setAttribute("nickName", user.getNickName());
 			request.setAttribute("firstName", user.getFirstName());
 			request.setAttribute("lastName", user.getLastName());
 			forwardPage = "editprofile.jsp";

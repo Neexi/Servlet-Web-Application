@@ -23,6 +23,7 @@
 	<table border="0">
 	<tr><td>Username		:</td><td><input type="text" name="username" value="<%= request.getAttribute("username") %>" size="40" disabled></td></tr>
 	<tr><td>Email		:</td><td><input type="text" name="email" value="<%= request.getAttribute("email") %>" size="40"></td></tr>
+	<tr><td>Nick Name		:</td><td><input type="text" name="nickName" value="<%= request.getAttribute("nickName") %>" size="40"></td></tr>
 	<tr><td>First Name		:</td><td><input type="text" name="firstName" value="<%= request.getAttribute("firstName") %>" size="40"></td></tr>
 	<tr><td>Last Name		:</td><td><input type="text" name="lastName" value="<%= request.getAttribute("lastName") %>" size="40"></td></tr>
 	</table>

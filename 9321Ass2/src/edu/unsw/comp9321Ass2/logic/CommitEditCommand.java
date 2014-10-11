@@ -17,15 +17,17 @@ public class CommitEditCommand implements Command {
 		if(cast.checkLogin((String)request.getSession().getAttribute("userSess"),(String)request.getSession().getAttribute("passSess"))) {
 			String username = (String)session.getAttribute("userSess");
 			String email = request.getParameter("email");
+			String nickName = request.getParameter("nickName");
 			String firstName = request.getParameter("firstName");
 			String lastName = request.getParameter("lastName");
 			String notLegit = legitimateEditProfile(email,firstName,lastName);
 			request.setAttribute("username", username);
 			request.setAttribute("email", email);
+			request.setAttribute("nickName", nickName);
 			request.setAttribute("firstName", firstName);
 			request.setAttribute("lastName", lastName);
 			if(notLegit.equals("")) {
-				cast.editUser(username, email, firstName, lastName);
+				cast.editUser(username, email, nickName, firstName, lastName);
 				session.setAttribute("message", "Your profile has been changed");
 				forwardPage = "editprofile.jsp";
 			} else {

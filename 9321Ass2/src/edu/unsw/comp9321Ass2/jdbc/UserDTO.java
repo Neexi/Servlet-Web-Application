@@ -9,6 +9,7 @@ public class UserDTO {
 	private String username;
 	private String password;
 	private String email;
+	private String nickName;
 	private String firstName;
 	private String lastName;
 	private String status;
@@ -18,16 +19,18 @@ public class UserDTO {
 		this.username = username;
 		this.password = password;
 		this.email = email;
+		nickName = "";
 		firstName = "";
 		lastName = "";
 		status = "inactive";
 	}
 	
-	public UserDTO(int userID, String username, String password, String email, String firstName, String lastName, String status) {
+	public UserDTO(int userID, String username, String password, String email, String nickName, String firstName, String lastName, String status) {
 		this.userID = userID;
 		this.username = username;
 		this.password = password;
 		this.email = email;
+		this.nickName = nickName;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.status = status;
@@ -49,8 +52,16 @@ public class UserDTO {
 		return email;
 	}
 	
+	public String getNickName() {
+		return nickName;
+	}
+	
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
 	}
 	
 	public String getFirstName() {
